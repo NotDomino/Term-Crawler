@@ -1,2 +1,21 @@
 # Term-Crawler
-RPG written in Python, not text-based, an actual RPG.
+RPG written in Python, not text-based, an actual Dungeon Crawler. you can use with WASD, have customisable options, etc.
+
+The goal of this project is to make an entirely interactive console-based dungeon crawler, and i mean i am gonn go _ham_ with the interactiveness if i can help it. ( it's movement based so who cares about fps anyways )
+
+ANY changes made will be posted here, I will try my best to keep this project active and rolling
+
+### *warning*
+
+**I am NOT good when it comes to writing code. my code WILL LIKELY be a bunch of spaghetti. DON'T expect to see anything remotely understandable**
+If you do decide to attempt to understand my code, feel free to suggest some things! any advice is taken.
+
+# Features as of right now
+- arrow keys and WASD to move
+- Some rectangle around the player currently acting as a "wall" (it is the screen, everything in the game will be visible in this box unless i feel like stepping out of it)
+
+# Why? what's wrong with you?
+I did a fair bit of googling for "RPG dungeon crawler in console" and couldn't find anything even remotely close to what i'm currently doing. It was all text-based stuff, i swear some of you people have no imagination... it's almost like you _enjoy_ the idea of not suffering...
+Also, i was bored a few days ago and thought "yeah this is a good idea" | *(spoilers, it wasn't a good idea)*
+# How do i run this code?
+download the whole file, there will be a requirements.txt. open the directory in a terminal, and execute "py main.py" and wallah, some random unintelligable text on your screen!
