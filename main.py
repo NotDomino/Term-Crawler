@@ -1,59 +1,21 @@
 from __future__ import annotations
 import curses
 import curses.textpad as cr_text
-from typing import TYPE_CHECKING, NoReturn
+from typing import TYPE_CHECKING, NoReturn, Tuple
+
 if TYPE_CHECKING:
 	from _curses import _CursesWindow
 
 from colours import Colours
+from player import Player
 
-class Player:
-	"""Player class
-	"""
-	def __init__(
-		self,
-		screen: Screen,
-		x: int,
-		y: int,
-		sprite: str = '#',
-	):
-		self.screen = screen
-		self.x, self.y = x, y
-		self.sprite = sprite
-	
-	def handle_movement(self, key: str) -> None:
-		"""Handles player movement
-
-		Args:
-			key (str): key (received through getkey())
-		"""
-		match key:
-			case "KEY_UP" | "w":
-				self.y -= 1
-			case "KEY_DOWN" | "s":
-				self.y += 1
-			case "KEY_LEFT" | "a":
-				self.x -= 1
-			case "KEY_RIGHT" | "d":
-				self.x += 1
-
-		# TODO screen scrolling ( so below code won't be necessary )
-		# keeps player within screen borders
-		if self.x <= self.screen.x:
-			self.x += 1
-		if self.x >= self.screen.width:
-			self.x -= 1
-		if self.y <= self.screen.y:
-			self.y += 1
-		if self.y >= self.screen.height:
-			self.y -= 1
 
 class Terminal:
 	"""Custom terminal wrapper for Curses, don't hand this down to classes, hand the Screen class"""
 	def __init__(
 		self,
 		stdscr: _CursesWindow
-	):
+	) -> None:
 		self.stdscr = stdscr
 		self.height, self.width = stdscr.getmaxyx() # terminal dimensions
 		self.screen = Screen(
@@ -75,11 +37,13 @@ class Terminal:
 		return self.stdscr.getmaxyx()
 
 	def __loop(self) -> NoReturn:
-		
+		"""Main game loop"""
 		while True:
-			self.stdscr.clear()
-			self.screen.refresh()
-			self.stdscr.refresh()
+			# TODO stick exception loop here, not done yet because i want it to crash :)
+			self.stdscr.clear() # mandatory, leave it alone
+			self.screen.refresh() # edit the refresh loop of THIS ONE
+			self.stdscr.refresh() # mandatory, leave it alone
+
 
 class Screen:
 	"""Hand this class down to other classes (eg. Player class)"""
@@ -97,22 +61,35 @@ class Screen:
 		# "screen" = visible rectangle
 		self.width = width - 2 # -2 because we want the "screen" to be inset by 2
 		self.height = height - 2 # -2 because we want the "screen" to be inset by 2
-		self.player = Player(self, self.x+1, self.y+1)
+		self.player = Player(self)
 	
+	@property
+	def center(self) -> Tuple[int, int]:
+		"""Returns center XY coordinates of Screen
+
+		Returns:
+			Tuple[int, int]: (x, y)
+		"""
+		return (self.width//2, self.height//2)
+
 	def refresh(self) -> None:
-		player = self.player
-		cr_text.rectangle(
+		"""Refreshes this portion of the code (only for use in Terminal)"""
+		cr_text.rectangle( # draws the border (rectangle)
 			self.term, 
 			self.y, self.x, 
 			self.height, self.width
 		)
 
-		self.screenPrint(player.x, player.y, player.sprite)
-		self.player.handle_movement(self.term.getkey())		
+		self.player.draw()
+		self.player.handle_movement()		
 
-	def screenPrint(self, x: int, y: int, words: str) -> None:
+	def print(self, x: int, y: int, words: str) -> None:
 		"""Print shit to the screen"""
 		self.term.addstr(y, x, words)
+	
+	def getKey(self) -> str:
+		return self.term.getkey()
+
 
 if __name__ == '__main__':
 	curses.wrapper(Terminal)
