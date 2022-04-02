@@ -1,8 +1,9 @@
 # General
 - [x] get basic movement input working
 - [x] implement boundaries so the player can't run away
-- [ ] implement an NPC
-- [ ] implement enemy
+- [x] implement other entities
+- [ ] implement proper NPC logic
+- [ ] implement proper enemy logic
 - [ ] implement items
 
 # Player
@@ -24,10 +25,11 @@
 - [ ] make space for text on screen (story / NPCs) (?)
 - [ ] main menu
 - [ ] level up menu
+- [ ] options menu
 - [ ] inventory menu
 - [ ] NPC shop menu (?)
 - [ ] allow chatting with NPC's
-- [ ] implement colours into things
+- [ ] pressing '/' allows you to "hover" over other entities and it will tell you what it is
 
 # what i'd like to be able to implement in the future
 - [ ] custom map creation
