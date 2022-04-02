@@ -20,7 +20,6 @@ class Player(Entity):
 	def handle_movement(self) -> None:
 		"""Handles player movement"""
 		ch = self.screen.getch()
-		self.screen.addlog(str(ch))
 		match ch: # probably a better way of doing this, however i am lazy
 			case 27: #escape key
 				self.screen.loadMenu("escape") # loads the escape menu

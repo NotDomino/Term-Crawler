@@ -4,7 +4,7 @@ import curses.textpad as cr_text
 
 from window.attributes import Attributes
 from entities import NPC, Player, Enemy
-from menus.escape import Escape
+from menus.options import Options
 if TYPE_CHECKING:
 	from main import Terminal
 	from entities import Entity
@@ -36,7 +36,7 @@ class Screen:
 
 		self.menus = {
 			"main": None, # needs implementing
-			"escape": Escape, # needs implementing
+			"escape": Options, # needs implementing
 			"inventory": None, # needs implementing
 			"options": None, # needs implementing
 		}
