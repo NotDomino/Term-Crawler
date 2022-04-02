@@ -1,3 +1,2 @@
-.vscode/settings.json
-__pycache__/colours.cpython-310.pyc
-__pycache__/player.cpython-310.pyc
+.vscode/
+__pycache__/
