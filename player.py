@@ -74,3 +74,8 @@ class Player:
 
 	def draw(self) -> None:
 		self.screen.print(self.x, self.y, self.sprite)
+
+	def refresh(self) -> None:
+		"""Refreshes the player"""
+		self.draw()
+		self.handle_movement()
