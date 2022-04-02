@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional
 from abc import ABC, abstractclassmethod
 
 if TYPE_CHECKING:
-	from screen import Screen
+	from window.screen import Screen
 
 class Entity(ABC):
 	"""base class for any on-screen entities

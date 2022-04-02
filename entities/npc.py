@@ -1,10 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from entity import Entity
+from entities.entity import Entity
 
 if TYPE_CHECKING:
-	from screen import Screen
+	from window.screen import Screen
 
 class NPC(Entity):
 	"""NPC class"""

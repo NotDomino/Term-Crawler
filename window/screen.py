@@ -2,14 +2,12 @@ from __future__ import annotations
 from typing import List, Optional, Tuple, TYPE_CHECKING
 import curses.textpad as cr_text
 
-from attributes import Attributes
-from npc import NPC
-from enemy import Enemy
-from player import Player
+from window.attributes import Attributes
+from entities import NPC, Player, Enemy
 
 if TYPE_CHECKING:
 	from main import Terminal
-	from entity import Entity
+	from entities import Entity
 
 class Screen:
 	"""The Screen is anything inside that large rectangle (if you run the file)

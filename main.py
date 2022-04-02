@@ -1,5 +1,5 @@
 import curses
-from terminal import Terminal
+from window.terminal import Terminal
 
 if __name__ == '__main__':
 	curses.wrapper(Terminal)
