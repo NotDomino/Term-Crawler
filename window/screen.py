@@ -4,7 +4,7 @@ import curses.textpad as cr_text
 
 from window.attributes import Attributes
 from entities import NPC, Player, Enemy
-
+from menus.escape import Escape
 if TYPE_CHECKING:
 	from main import Terminal
 	from entities import Entity
@@ -34,6 +34,28 @@ class Screen:
 		]
 		self.log: List[Tuple[str, int]] = []
 
+		self.menus = {
+			"main": None, # needs implementing
+			"escape": Escape, # needs implementing
+			"inventory": None, # needs implementing
+			"options": None, # needs implementing
+		}
+		self.menu = None
+
+	# --------------------------------------------------------
+
+	# MENUS
+	# --------------------------------------------------------
+	def loadMenu(self, name: str) -> None:
+		"""loads provided menu"""
+		if not (name in self.menus.keys()):
+			return
+		self.menu = self.menus[name](self)
+	
+	# --------------------------------------------------------
+	
+	# LOGS
+	# --------------------------------------------------------
 	def addlog(self, text: str, attrib: int = None) -> None:
 		"""Adds to the text log"""
 		if not attrib:
@@ -47,23 +69,30 @@ class Screen:
 		for index, log in enumerate(self.log):
 			self.print(0, self.height+index+1, log[0], log[1])
 
+	# --------------------------------------------------------
+
+	# MAIN
+	# --------------------------------------------------------
+
 	def refresh(self) -> None:
-		"""Refreshes this portion of the code (only for use in Terminal)"""
+		"""Refreshes the screen"""
 		cr_text.rectangle( # draws the border (rectangle)
 			self.term.stdscr, 
 			self.y, self.x, 
 			self.height, self.width
 		)
-		self.print_log()
+		if self.menu:  
+			return self.menu.run()
+		self.print_log() # prints the log underneath the rectangle
+
+		# TODO separate input back out of the player class, causing some more than mild issues
 		for entity in self.entities:
-			entity.update()
-				
-	def print(self, x: int, y: int, words: str, attr = None) -> None:
-		"""Print shit to the screen"""
-		if not attr:
-			return self.term.stdscr.addstr(y, x, words)
-		return self.term.stdscr.addstr(y, x, words, attr)
+			entity.update() # updates each entity
 	
+	# --------------------------------------------------------
+
+	# KEY INPUTS
+	# --------------------------------------------------------
 	def getkey(self) -> str:
 		"""gets key input"""
 		return self.term.stdscr.getkey()
@@ -71,8 +100,19 @@ class Screen:
 	def getch(self) -> int:
 		"""gets key input"""
 		return self.term.stdscr.getch()
+	
+	# --------------------------------------------------------
+	# HELPFUL STUFF
+	# --------------------------------------------------------
 
-	def whatsInThisPosition(self, x: int, y: int) -> Optional[Entity]:
+	def print(self, x: int, y: int, words: str, attr = None) -> None:
+		"""Print shit to the screen"""
+		if not attr:
+			return self.term.stdscr.addstr(y, x, words)
+		return self.term.stdscr.addstr(y, x, words, attr)
+
+	def entityInPos(self, x: int, y: int) -> Optional[Entity]:
+		"""Checks if an entity is in the given position"""
 		for entity in self.entities:
 			if entity.x == x and entity.y == y:
 				return entity

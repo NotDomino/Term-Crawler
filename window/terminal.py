@@ -17,7 +17,7 @@ class Terminal:
 			self.width-4, self.height-5
 		) # going to be a box that is inset by 4 on all sides
 
-		# big ups initializer (couldn't live without you)
+
 		self.__loop()
 
 	@property

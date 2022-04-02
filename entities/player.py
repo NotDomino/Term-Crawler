@@ -20,34 +20,34 @@ class Player(Entity):
 	def handle_movement(self) -> None:
 		"""Handles player movement"""
 		ch = self.screen.getch()
-
+		self.screen.addlog(str(ch))
 		match ch: # probably a better way of doing this, however i am lazy
 			case 27: #escape key
-				exit()
-
+				self.screen.loadMenu("escape") # loads the escape menu
+			
 			case 259 | 119: # up arrow | w
-				ent = self.screen.whatsInThisPosition(self.x, self.y-1)
+				ent = self.screen.entityInPos(self.x, self.y-1)
 				if ent and ent.block:
 					ent.interact()
 					return
 				self.y -= 1
 				
 			case 258 | 115: # down arrow | s
-				ent = self.screen.whatsInThisPosition(self.x, self.y+1)
+				ent = self.screen.entityInPos(self.x, self.y+1)
 				if ent and ent.block:
 					ent.interact()
 					return
 				self.y += 1
 				
 			case 260 | 97: # left arrow | a
-				ent = self.screen.whatsInThisPosition(self.x-1, self.y)
+				ent = self.screen.entityInPos(self.x-1, self.y)
 				if ent and ent.block:
 					ent.interact()
 					return
 				self.x -= 1
 				
 			case 261 | 100: # right arrow | d
-				ent = self.screen.whatsInThisPosition(self.x+1, self.y)
+				ent = self.screen.entityInPos(self.x+1, self.y)
 				if ent and ent.block:
 					ent.interact()
 					return
