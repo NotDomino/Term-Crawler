@@ -1,11 +1,10 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING
 
 from entity import Entity
 
-from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
-	from main import Screen
+	from screen import Screen
 
 class NPC(Entity):
 	"""NPC class"""
@@ -18,7 +17,6 @@ class NPC(Entity):
 		y: int
 	):
 		super().__init__(screen, sprite, screen.attribs.green)
-		self.screen = screen
 		self.x = x
 		self.y = y
 	
@@ -27,4 +25,4 @@ class NPC(Entity):
 		self.inside_border_check() # makes sure entity doesn't leave borders
 	
 	def interact(self) -> None:
-		self.screen.addlog("Why did you just touch me?", self.screen.attribs.yellow)
+		self.screen.addlog("Why did you just touch me?")

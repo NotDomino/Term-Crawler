@@ -1,9 +1,9 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING, Optional
 from abc import ABC, abstractclassmethod
 
-
-from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
-	from main import Screen
+	from screen import Screen
 
 class Entity(ABC):
 	"""base class for any on-screen entities
@@ -11,7 +11,7 @@ class Entity(ABC):
 
 	def __init__(
 		self,
-		screen,
+		screen: Screen,
 		sprite: str,
 		colour: Optional[int] = None
 	) -> None:

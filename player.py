@@ -1,11 +1,10 @@
 from __future__ import annotations
-
+from typing import TYPE_CHECKING
 
 from entity import Entity
 
-from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-	from main import Screen
+	from screen import Screen
 
 
 class Player(Entity):
