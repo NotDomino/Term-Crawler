@@ -20,31 +20,34 @@ class Player(Entity):
 	
 	def handle_movement(self) -> None:
 		"""Handles player movement"""
-		key = self.screen.getkey()
-		match key: # probably a better way of doing this, however i am lazy
-			
-			case "KEY_UP" | "w":
+		ch = self.screen.getch()
+
+		match ch: # probably a better way of doing this, however i am lazy
+			case 27: #escape key
+				exit()
+
+			case 259 | 119: # up arrow | w
 				ent = self.screen.whatsInThisPosition(self.x, self.y-1)
 				if ent and ent.block:
 					ent.interact()
 					return
 				self.y -= 1
 				
-			case "KEY_DOWN" | "s":
+			case 258 | 115: # down arrow | s
 				ent = self.screen.whatsInThisPosition(self.x, self.y+1)
 				if ent and ent.block:
 					ent.interact()
 					return
 				self.y += 1
 				
-			case "KEY_LEFT" | "a":
+			case 260 | 97: # left arrow | a
 				ent = self.screen.whatsInThisPosition(self.x-1, self.y)
 				if ent and ent.block:
 					ent.interact()
 					return
 				self.x -= 1
 				
-			case "KEY_RIGHT" | "d":
+			case 261 | 100: # right arrow | d
 				ent = self.screen.whatsInThisPosition(self.x+1, self.y)
 				if ent and ent.block:
 					ent.interact()
