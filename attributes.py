@@ -1,4 +1,4 @@
-import _curses as curses
+import curses
 
 class Attributes:
 	def __init__(self):
