@@ -103,6 +103,10 @@ class Screen:
 		"""gets key input"""
 		return self.term.stdscr.getkey()
 
+	def getch(self) -> int:
+		"""gets key input"""
+		return self.term.stdscr.getch()
+
 	def whatsInThisPosition(self, x: int, y: int) -> Optional[Entity]:
 		for entity in self.entities:
 			if entity.x == x and entity.y == y:
