@@ -8,10 +8,11 @@ if TYPE_CHECKING:
 
 from colours import Colours
 from player import Player
+from friendly import NPC
 
 
 class Terminal:
-	"""Custom terminal wrapper for Curses, don't hand this down to classes, hand the Screen class"""
+	"""Custom terminal wrapper for Curses. Don't really recommend touching this class"""
 	def __init__(
 		self,
 		stdscr: _CursesWindow
@@ -61,7 +62,10 @@ class Screen:
 		# "screen" = visible rectangle
 		self.width = width - 2 # -2 because we want the "screen" to be inset by 2
 		self.height = height - 2 # -2 because we want the "screen" to be inset by 2
-		self.player = Player(self)
+		self.entityList = [
+			Player(self),
+			NPC(self)
+		]
 	
 	@property
 	def center(self) -> Tuple[int, int]:
@@ -79,10 +83,9 @@ class Screen:
 			self.y, self.x, 
 			self.height, self.width
 		)
-
-		self.player.draw()
-		self.player.handle_movement()		
-
+		for entity in self.entityList:
+			entity.refresh()
+				
 	def print(self, x: int, y: int, words: str) -> None:
 		"""Print shit to the screen"""
 		self.term.addstr(y, x, words)
