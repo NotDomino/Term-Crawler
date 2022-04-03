@@ -25,4 +25,4 @@ class NPC(Entity):
 		self.inside_border_check() # makes sure entity doesn't leave borders
 	
 	def interact(self) -> None:
-		self.screen.addlog("Why did you just touch me?")
+		self.screen.addLog("Why did you just touch me?")

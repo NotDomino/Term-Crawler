@@ -2,9 +2,9 @@
 - [x] get basic movement input working
 - [x] implement boundaries so the player can't run away
 - [x] implement other entities
-- [ ] implement proper NPC logic
-- [ ] implement proper enemy logic
-- [ ] implement items
+	- [ ] implement proper NPC logic
+	- [ ] implement proper enemy logic
+	- [ ] implement items
 
 # Player
 - [ ] implement statistics (possibly on screen somewhere)

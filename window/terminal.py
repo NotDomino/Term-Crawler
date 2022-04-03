@@ -9,6 +9,7 @@ class Terminal:
 		self,
 		stdscr
 	) -> None:
+	
 		self.stdscr = stdscr
 		self.height, self.width = self.dimensions # terminal dimensions
 		self.screen = Screen(
@@ -34,5 +35,7 @@ class Terminal:
 		while True:
 			# TODO stick exception loop here, not done yet because i want it to crash :)
 			self.stdscr.clear() # mandatory, leave it alone
+
 			self.screen.refresh() # edit the refresh loop of THIS ONE
+			
 			self.stdscr.refresh() # mandatory, leave it alone

@@ -15,30 +15,33 @@ class Screen:
 
 	def __init__(
 		self,
-		mainWindow: Terminal,
+		terminal: Terminal,
 		x, y,
 		width, height
 	):
 		self.attribs = Attributes() # colours initialization
-		self.term = mainWindow #stdscr, not "really" necessary (as of right now) 
+		self.term = terminal
 		self.x = x
 		self.y = y
 
 		# "screen" = visible rectangle
 		self.width = width # -2 because we want the "screen" to be inset by 2
 		self.height = height # -2 because we want the "screen" to be inset by 2
+		
 		self.entities: List[Entity] = [
 			NPC(self, '#', 10, 10),
 			Enemy(self, '@', 20, 20),
 			Player(self),
 		]
+
+		self.walls = [] # not yet implemented
+		
 		self.log: List[Tuple[str, int]] = []
 
 		self.menus = {
 			"main": None, # needs implementing
-			"escape": Options, # needs implementing
+			"options": Options, 
 			"inventory": None, # needs implementing
-			"options": None, # needs implementing
 		}
 		self.menu = None
 
@@ -48,23 +51,24 @@ class Screen:
 	# --------------------------------------------------------
 	def loadMenu(self, name: str) -> None:
 		"""loads provided menu"""
-		if not (name in self.menus.keys()):
-			return
 		self.menu = self.menus[name](self)
 	
 	# --------------------------------------------------------
 	
 	# LOGS
 	# --------------------------------------------------------
-	def addlog(self, text: str, attrib: int = None) -> None:
+	def addLog(self, text: str, attrib: int = None) -> None:
 		"""Adds to the text log"""
 		if not attrib:
 			attrib = self.attribs.yellow
+
 		self.log.append((text, attrib))
+		
+		# delete oldest logs
 		while len(self.log) > self.term.height - self.height - 1:
 			self.log.pop(0)
 	
-	def print_log(self) -> None:
+	def printLog(self) -> None:
 		"""Prints the text log"""
 		for index, log in enumerate(self.log):
 			self.print(0, self.height+index+1, log[0], log[1])
@@ -76,18 +80,18 @@ class Screen:
 
 	def refresh(self) -> None:
 		"""Refreshes the screen"""
-		cr_text.rectangle( # draws the border (rectangle)
-			self.term.stdscr, 
-			self.y, self.x, 
-			self.height, self.width
-		)
+		self.draw_border()
+
 		if self.menu:  
 			return self.menu.run()
-		self.print_log() # prints the log underneath the rectangle
 
-		# TODO separate input back out of the player class, causing some more than mild issues
+		self.printLog() # prints the log underneath the border
+
 		for entity in self.entities:
 			entity.update() # updates each entity
+
+		# TODO separate input back out of the player class, causing some more than mild issues
+		# self.getPlayerInput()
 	
 	# --------------------------------------------------------
 
@@ -105,11 +109,22 @@ class Screen:
 	# HELPFUL STUFF
 	# --------------------------------------------------------
 
-	def print(self, x: int, y: int, words: str, attr = None) -> None:
+	def draw_border(self) -> None:
+		"""draws the rectangular border"""
+		cr_text.rectangle(
+			self.term.stdscr, 
+			self.y, self.x, 
+			self.height, self.width
+		)
+
+	def print(self, x: int, y: int, text: str, attr = None, center_align: bool = False) -> None:
 		"""Print shit to the screen"""
+		if center_align:
+			x -= len(text)//2
+
 		if not attr:
-			return self.term.stdscr.addstr(y, x, words)
-		return self.term.stdscr.addstr(y, x, words, attr)
+			return self.term.stdscr.addstr(y, x, text)
+		self.term.stdscr.addstr(y, x, text, attr)
 
 	def entityInPos(self, x: int, y: int) -> Optional[Entity]:
 		"""Checks if an entity is in the given position"""

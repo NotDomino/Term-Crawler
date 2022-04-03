@@ -19,7 +19,7 @@ class Enemy(Entity):
 		self.y = y
 	
 	def interact(self) -> None:
-		self.screen.addlog("Harder", self.screen.attribs.red)
+		self.screen.addLog("Harder", self.screen.attribs.red)
 	
 	def handle_movement(self) -> None:
 		self.inside_border_check() # makes sure entity doesn't leave borders

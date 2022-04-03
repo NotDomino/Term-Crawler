@@ -22,7 +22,7 @@ class Player(Entity):
 		ch = self.screen.getch()
 		match ch: # probably a better way of doing this, however i am lazy
 			case 27: #escape key
-				self.screen.loadMenu("escape") # loads the escape menu
+				self.screen.loadMenu("options") # loads the escape menu
 			
 			case 259 | 119: # up arrow | w
 				ent = self.screen.entityInPos(self.x, self.y-1)
