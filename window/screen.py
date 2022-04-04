@@ -25,8 +25,8 @@ class Screen:
 		self.y = y
 
 		# "screen" = visible rectangle
-		self.width = width # -2 because we want the "screen" to be inset by 2
-		self.height = height # -2 because we want the "screen" to be inset by 2
+		self.width = width
+		self.height = height
 		
 		self.entities: List[Entity] = [
 			NPC(self, '#', 10, 10),
@@ -37,7 +37,7 @@ class Screen:
 		self.walls = [] # not yet implemented
 		
 		self.log: List[Tuple[str, int]] = []
-
+		self.addLog('You wake up in a dungeon... where am i?', self.attribs.cyan | self.attribs.bold)
 		self.menus = {
 			"main": None, # needs implementing
 			"options": Options, 
@@ -80,11 +80,12 @@ class Screen:
 
 	def refresh(self) -> None:
 		"""Refreshes the screen"""
-		self.draw_border()
+		self.drawBorder()
 
 		if self.menu:  
 			return self.menu.run()
 
+		self.printStats()
 		self.printLog() # prints the log underneath the border
 
 		for entity in self.entities:
@@ -109,13 +110,43 @@ class Screen:
 	# HELPFUL STUFF
 	# --------------------------------------------------------
 
-	def draw_border(self) -> None:
+	def drawBorder(self) -> None:
 		"""draws the rectangular border"""
 		cr_text.rectangle(
 			self.term.stdscr, 
 			self.y, self.x, 
 			self.height, self.width
 		)
+		
+
+	def printStats(self):
+		"""Prints the players stats"""
+		x = self.width + (self.term.width-self.width) //2
+
+		toPrint = [
+			f"Hp (10/10)",
+			(f"##########", self.attribs.green | self.attribs.bold),
+			f"Fp (3/10)",
+			(f"##--------", self.attribs.red | self.attribs.bold),
+			f"Att | 0",
+			f"Def | 0",
+			f"Str | 0",
+			f"Dex | 0",
+			f"Mag | 0",
+			f"Lck | 0"
+		]
+
+		self.print(x, 0, "STATS", self.attribs.yellow | self.attribs.underline, True) # prints the STATS title
+		for i in range(len(toPrint)):
+			stat = toPrint[i]
+			if type(stat) == tuple: # if the text has custom attributes assigned to it
+				stat, attrib = stat
+				self.print(x, i+2, stat, attrib, True)
+				continue
+
+			self.print(x, i+2, stat, self.attribs.yellow, True)
+
+
 
 	def print(self, x: int, y: int, text: str, attr = None, center_align: bool = False) -> None:
 		"""Print shit to the screen"""

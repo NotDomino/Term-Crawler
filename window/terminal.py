@@ -15,7 +15,7 @@ class Terminal:
 		self.screen = Screen(
 			self,
 			0, 0,
-			self.width-4, self.height-5
+			self.width-20, self.height-10	
 		) # going to be a box that is inset by 4 on all sides
 
 
