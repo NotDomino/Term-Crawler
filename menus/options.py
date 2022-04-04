@@ -49,11 +49,13 @@ class Options(Menu):
 		self.getKeyIn()
 
 	def save(self) -> None:
-		# TODO implement save function
+		# TODO: implement save function
+		# these todos are gonna be here for a while
 		self.back()
 
 	def load(self) -> None:
-		# TODO implement load function
+		# TODO: implement load function
+		# these todos are gonna be here for a while
 		self.back()
 
 	def back(self):

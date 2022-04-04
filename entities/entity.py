@@ -20,8 +20,14 @@ class Entity(ABC):
 		self.colour = colour
 		self.x: int = 0
 		self.y: int = 0
+		
 		self.block = True
+		self.isNPC = True
 	
+	@property
+	def isPlayer(self) -> bool:
+		return not self.isNPC
+
 	def set_pos(
 		self,
 		x:int = None, 
@@ -69,6 +75,18 @@ class Entity(ABC):
 		self.screen.term.stdscr.move(0, 0) # leave this here
 		self.handle_movement()
 	
+	def move(self, x: int, y: int):
+		"""Moves the entity
+
+		Args:
+			x (int): only needs to be -1, 0, 1
+			y (int): only needs to be -1, 0, 1
+		"""
+		self.x += x
+		self.y += y
+
+		self.inside_border_check()
+
 	@abstractclassmethod
 	def handle_movement(self) -> None:
 		"""Handles movement"""

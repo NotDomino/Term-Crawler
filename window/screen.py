@@ -4,8 +4,10 @@ import curses.textpad as cr_text
 
 from window.attributes import Attributes
 from entities import NPC, Player, Enemy
-from menus.options import Options
+from menus import Options
+
 if TYPE_CHECKING:
+	from menus import Menu
 	from main import Terminal
 	from entities import Entity
 
@@ -29,11 +31,12 @@ class Screen:
 		self.height = height
 		
 		self.entities: List[Entity] = [
+			Player(self), # Player should always be first in the 
 			NPC(self, '#', 10, 10),
 			Enemy(self, '@', 20, 20),
-			Player(self),
 		]
 
+		# TODO: map class
 		self.walls = [] # not yet implemented
 		
 		self.log: List[Tuple[str, int]] = []
@@ -43,20 +46,21 @@ class Screen:
 			"options": Options, 
 			"inventory": None, # needs implementing
 		}
-		self.menu = None
+
+		self.menu: Menu = None
 
 	# --------------------------------------------------------
-
 	# MENUS
 	# --------------------------------------------------------
+
 	def loadMenu(self, name: str) -> None:
 		"""loads provided menu"""
 		self.menu = self.menus[name](self)
 	
 	# --------------------------------------------------------
-	
 	# LOGS
 	# --------------------------------------------------------
+	
 	def addLog(self, text: str, attrib: int = None) -> None:
 		"""Adds to the text log"""
 		if not attrib:
@@ -64,24 +68,29 @@ class Screen:
 
 		self.log.append((text, attrib))
 		
+		# TODO: don't delete oldest logs, just print most recent logs
 		# delete oldest logs
-		while len(self.log) > self.term.height - self.height - 1:
+		while len(self.log) > (self.term.height - self.height) - 1:
 			self.log.pop(0)
 	
 	def printLog(self) -> None:
 		"""Prints the text log"""
+		# TODO: add keybind to print all logs into a menu (v or L probably)
+		# TODO: don't delete oldest logs, just print most recent logs
 		for index, log in enumerate(self.log):
 			self.print(0, self.height+index+1, log[0], log[1])
 
-	# --------------------------------------------------------
+	def clearLog(self) -> None:
+		"""Clears the whole text log"""
+		self.log = []
 
+	# --------------------------------------------------------
 	# MAIN
 	# --------------------------------------------------------
 
 	def refresh(self) -> None:
 		"""Refreshes the screen"""
 		self.drawBorder()
-
 		if self.menu:  
 			return self.menu.run()
 
@@ -91,13 +100,13 @@ class Screen:
 		for entity in self.entities:
 			entity.update() # updates each entity
 
-		# TODO separate input back out of the player class, causing some more than mild issues
-		# self.getPlayerInput()
+		self.player.handle_movement()
+
 	
 	# --------------------------------------------------------
-
 	# KEY INPUTS
 	# --------------------------------------------------------
+	
 	def getkey(self) -> str:
 		"""gets key input"""
 		return self.term.stdscr.getkey()
@@ -118,27 +127,15 @@ class Screen:
 			self.height, self.width
 		)
 		
-
 	def printStats(self):
 		"""Prints the players stats"""
 		x = self.width + (self.term.width-self.width) //2
 
-		toPrint = [
-			f"Hp (10/10)",
-			(f"##########", self.attribs.green | self.attribs.bold),
-			f"Fp (3/10)",
-			(f"##--------", self.attribs.red | self.attribs.bold),
-			f"Att | 0",
-			f"Def | 0",
-			f"Str | 0",
-			f"Dex | 0",
-			f"Mag | 0",
-			f"Lck | 0"
-		]
+		playerStats = self.player.stats
 
 		self.print(x, 0, "STATS", self.attribs.yellow | self.attribs.underline, True) # prints the STATS title
-		for i in range(len(toPrint)):
-			stat = toPrint[i]
+		for i in range(len(playerStats)):
+			stat = playerStats[i]
 			if type(stat) == tuple: # if the text has custom attributes assigned to it
 				stat, attrib = stat
 				self.print(x, i+2, stat, attrib, True)
@@ -146,10 +143,11 @@ class Screen:
 
 			self.print(x, i+2, stat, self.attribs.yellow, True)
 
-
-
 	def print(self, x: int, y: int, text: str, attr = None, center_align: bool = False) -> None:
-		"""Print shit to the screen"""
+		"""Print stuff to the screen
+		args:
+			attr: eg: self.screen.attribs.yellow | self.screen.attribs.bold
+		"""
 		if center_align:
 			x -= len(text)//2
 
@@ -157,7 +155,7 @@ class Screen:
 			return self.term.stdscr.addstr(y, x, text)
 		self.term.stdscr.addstr(y, x, text, attr)
 
-	def entityInPos(self, x: int, y: int) -> Optional[Entity]:
+	def getEntityAtPos(self, x: int, y: int) -> Optional[Entity]:
 		"""Checks if an entity is in the given position"""
 		for entity in self.entities:
 			if entity.x == x and entity.y == y:
@@ -172,3 +170,8 @@ class Screen:
 			Tuple[int, int]: (x, y)
 		"""
 		return (self.width//2, self.height//2)
+
+	@property
+	def player(self) -> Player:
+		# TODO: find a way to NOT hardcode the Player's position in the entity list
+		return self.entities[0]
