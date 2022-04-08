@@ -1,7 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List
 
-from entities.entity import Entity
+from .entity import Entity, Types
+from .InputManager import PlayerInput
 
 if TYPE_CHECKING:
 	from window.screen import Screen
@@ -15,61 +16,10 @@ class Player(Entity):
 		sprite: str = '#',
 	):
 		super().__init__(screen, sprite)
+		self.InputManager = PlayerInput(self)
+		self.type = Types.PLAYER
 		self.set_pos()
-		self.isNPC = False
-		self.maxHP = 10
-		self.maxFP = 10
-		self.hp = self.maxHP
-		self.fp = self.maxFP
-	
-	def update(self):
-		"""Custom update method for player"""
-		self.draw()
-		self.screen.term.stdscr.move(0, 0) # leave this here
-		# handle_movement moved to the screen class
 		
-	def handle_movement(self) -> None:
-		"""Handles player movement"""
-		ch = self.screen.getch()
-		match ch: # probably a better way of doing this, however i am lazy
-			case 27: #escape key
-				self.screen.loadMenu("options") # loads the escape menu
-			
-			case 259 | 119: # up arrow | w
-				ent = self.screen.getEntityAtPos(self.x, self.y-1)
-				if ent and ent.block:
-					ent.interact()
-					return
-				self.y -= 1
-				
-			case 258 | 115: # down arrow | s
-				ent = self.screen.getEntityAtPos(self.x, self.y+1)
-				if ent and ent.block:
-					ent.interact()
-					return
-				self.y += 1
-				
-			case 260 | 97: # left arrow | a
-				ent = self.screen.getEntityAtPos(self.x-1, self.y)
-				if ent and ent.block:
-					ent.interact()
-					return
-				self.x -= 1
-				
-			case 261 | 100: # right arrow | d
-				ent = self.screen.getEntityAtPos(self.x+1, self.y)
-				if ent and ent.block:
-					ent.interact()
-					return
-				self.x += 1
-
-		# makes sure the positions are all ok
-		self.inside_border_check()
-	
-	def interact(self) -> None:
-		"""Unused, Nothing should interact with player"""
-		pass
-
 	@property
 	def stats(self) -> List[str]:
 		"""Returns dynamic statlist (WIP)"""
@@ -100,12 +50,8 @@ class Player(Entity):
 			f"Lck | 0"
 		]
 	
-	def damage(self, hp: int) -> None:
-		self.hp -= hp
-		if self.hp < 0:
-			self.hp = 0
-	
-	def heal(self, hp: int) -> None:
-		self.hp += hp
-		if self.hp > self.maxHP:
-			self.hp = self.maxHP
+	def interact(self, entity: Entity) -> None:
+		if entity.type == Types.FRIENDLY:
+			return
+		self.screen.addLog(f"Player was damaged for {entity.dmg} hp!")
+		self.damage(entity.dmg)

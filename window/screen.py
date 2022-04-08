@@ -2,14 +2,15 @@ from __future__ import annotations
 from typing import List, Optional, Tuple, TYPE_CHECKING
 import curses.textpad as cr_text
 
-from window.attributes import Attributes
-from entities import NPC, Player, Enemy
+from entities.entity import Types
+
+from .attributes import Attributes
+from entities import Friendly, Player, Enemy, Entity
 from menus import Options
 
 if TYPE_CHECKING:
 	from menus import Menu
 	from main import Terminal
-	from entities import Entity
 
 class Screen:
 	"""The Screen is anything inside that large rectangle (if you run the file)
@@ -20,7 +21,7 @@ class Screen:
 		terminal: Terminal,
 		x, y,
 		width, height
-	):
+	) -> None:
 		self.attribs = Attributes() # colours initialization
 		self.term = terminal
 		self.x = x
@@ -32,7 +33,7 @@ class Screen:
 		
 		self.entities: List[Entity] = [
 			Player(self), # Player should always be first in the 
-			NPC(self, '#', 10, 10),
+			Friendly(self, '#', 10, 10),
 			Enemy(self, '@', 20, 20),
 		]
 
@@ -98,15 +99,17 @@ class Screen:
 		self.printLog() # prints the log underneath the border
 
 		for entity in self.entities:
+			if entity.isPlayer:
+				player = entity # mild optimization
+				continue
 			entity.update() # updates each entity
 
-		self.player.handle_movement()
+		player.update()
+		
+	# --------------------------------------------------------
+	# HELPFUL STUFF
+	# --------------------------------------------------------
 
-	
-	# --------------------------------------------------------
-	# KEY INPUTS
-	# --------------------------------------------------------
-	
 	def getkey(self) -> str:
 		"""gets key input"""
 		return self.term.stdscr.getkey()
@@ -114,10 +117,6 @@ class Screen:
 	def getch(self) -> int:
 		"""gets key input"""
 		return self.term.stdscr.getch()
-	
-	# --------------------------------------------------------
-	# HELPFUL STUFF
-	# --------------------------------------------------------
 
 	def drawBorder(self) -> None:
 		"""draws the rectangular border"""
@@ -127,13 +126,14 @@ class Screen:
 			self.height, self.width
 		)
 		
-	def printStats(self):
+	def printStats(self) -> None:
 		"""Prints the players stats"""
 		x = self.width + (self.term.width-self.width) //2
 
 		playerStats = self.player.stats
 
-		self.print(x, 0, "STATS", self.attribs.yellow | self.attribs.underline, True) # prints the STATS title
+		self.print(x, 0, "STATS", self.attribs.yellow | self.attribs.bold, True) # prints the STATS title
+
 		for i in range(len(playerStats)):
 			stat = playerStats[i]
 			if type(stat) == tuple: # if the text has custom attributes assigned to it
@@ -173,5 +173,7 @@ class Screen:
 
 	@property
 	def player(self) -> Player:
-		# TODO: find a way to NOT hardcode the Player's position in the entity list
-		return self.entities[0]
+		for entity in self.entities:
+			if not entity.isPlayer:
+				continue
+			return entity

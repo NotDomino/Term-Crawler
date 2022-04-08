@@ -1,6 +1,3 @@
-import win32console
-
-
 import curses
 from window.terminal import Terminal
 

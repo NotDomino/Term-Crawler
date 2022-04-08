@@ -1,7 +1,7 @@
 """Not really much point touching this file"""
 from typing import NoReturn
 
-from window.screen import Screen
+from .screen import Screen
 
 class Terminal:
 	"""Custom terminal wrapper for Curses. Don't really recommend touching this class"""

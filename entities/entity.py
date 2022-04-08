@@ -1,9 +1,17 @@
 from __future__ import annotations
+from enum import Enum, auto
 from typing import TYPE_CHECKING, Optional
 from abc import ABC, abstractclassmethod
 
+from .InputManager import BasicMovement
 if TYPE_CHECKING:
 	from window.screen import Screen
+
+class Types(Enum):
+	"""Entity types"""
+	FRIENDLY = auto()
+	ENEMY = auto()
+	PLAYER = auto()
 
 class Entity(ABC):
 	"""base class for any on-screen entities
@@ -20,13 +28,33 @@ class Entity(ABC):
 		self.colour = colour
 		self.x: int = 0
 		self.y: int = 0
-		
+		self.type: Types = None
+
+		self.maxHP = 10
+		self.maxFP = 10
+		self.hp = self.maxHP
+		self.fp = self.maxFP
+		self.dmg = 2
 		self.block = True
-		self.isNPC = True
+		self.InputManager = BasicMovement(self)
 	
-	@property
-	def isPlayer(self) -> bool:
-		return not self.isNPC
+	def die(self) -> None:
+		"""Only run if the entity has died"""
+		self.InputManager = None
+		self.block = False
+		self.sprite = 'x'
+		self.screen.addLog(f'Enemy died!', self.screen.attribs.red | self.screen.attribs.bold)
+	
+	def damage(self, hp: int) -> None:
+		self.hp -= hp
+		if self.hp < 0:
+			self.hp = 0
+			self.die()
+	
+	def heal(self, hp: int) -> None:
+		self.hp += hp
+		if self.hp > self.maxHP:
+			self.hp = self.maxHP
 
 	def set_pos(
 		self,
@@ -52,8 +80,9 @@ class Entity(ABC):
 		"""Checks the position of the entity, makes adjustments if necessary"""
 		# TODO screen scrolling ( so below code won't be necessary )
 		# keeps entities within screen borders
+
 		if self.x <= self.screen.x:
-			self.x = self.screen.x + 1
+			self.x = self.screen.x +1
 			
 		if self.x >= self.screen.width:
 			self.x = self.screen.width -1
@@ -73,8 +102,12 @@ class Entity(ABC):
 	def update(self):
 		self.draw()
 		self.screen.term.stdscr.move(0, 0) # leave this here
-		self.handle_movement()
-	
+		if self.InputManager:
+			return self.InputManager.handle()
+			
+		if self.isPlayer:
+			self.screen.addLog("Game over!")
+
 	def move(self, x: int, y: int):
 		"""Moves the entity
 
@@ -82,17 +115,21 @@ class Entity(ABC):
 			x (int): only needs to be -1, 0, 1
 			y (int): only needs to be -1, 0, 1
 		"""
+		ent = self.screen.getEntityAtPos(self.x+x, self.y+y)
+		if ent and ent.block and self != ent:
+
+			return ent.interact(self)
+
 		self.x += x
 		self.y += y
-
 		self.inside_border_check()
-
-	@abstractclassmethod
-	def handle_movement(self) -> None:
-		"""Handles movement"""
-		raise NotImplementedError
 	
 	@abstractclassmethod
 	def interact(self) -> None:
-		"""Handles interaction with this entity"""
 		raise NotImplementedError
+
+	@property
+	def isPlayer(self) -> bool:
+		if self.type == Types.PLAYER:
+			return True
+		return False
