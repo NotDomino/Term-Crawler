@@ -31,21 +31,21 @@ class Map:
 
 	def render(self) -> None:
 		# adjust camera first before rendering entities
-		xMargin = self.game.width//2 - (self.centeredEntity.x + self.x)
 		yMargin = self.game.height//2 - (self.centeredEntity.y + self.y)		
 		if yMargin > 5:
 			self.y += 1
 		if yMargin < -5:
 			self.y -= 1
+		# adjust camera on x axis
+		xMargin = self.game.width//2 - (self.centeredEntity.x + self.x)
 		if xMargin > 5:
 			self.x += 1
 		if xMargin < -5:
 			self.x -= 1
 
 		# render walls n shit here
-		for coord in self.circle_coords(0, 0, 5):
+		for coord in self.circle_coords(0, 0, 2):
 			self.place(coord[0], coord[1], '█')
-
 
 		# render entities
 		for entity in self.entities:
@@ -53,7 +53,6 @@ class Map:
 				entity.InputManager.handle()
 			self.place(entity.x, entity.y, entity.char, entity.colour)
 			
-
 		"""
 		█ << these are to be used too
 			╔═╦═╗
@@ -103,7 +102,8 @@ class Map:
 					(x - radius) * (x - radius) +
 					(y - radius) * (y - radius))
 				if (dist < radius):
-					toReturn.append((int(x+xPos), int(y+yPos)))
+					toReturn.append((int(x+xPos)*2, int(y+yPos)))
+					toReturn.append((int(x+xPos)*2+1, int(y+yPos)))
 		return toReturn
 
 	def getEntityAtPos(self, x: int, y: int) -> Optional[Entity]:
