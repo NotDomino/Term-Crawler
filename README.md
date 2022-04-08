@@ -17,6 +17,8 @@ If you do decide to attempt to understand my code, feel free to suggest some thi
 - logs
 - Player stats
 - Fancy looking rectangle
+- Map Scrolling
+- Shitty code
 
 # Why? what's wrong with you?
 I did a fair bit of googling for "2D RPG dungeon crawler in console" and couldn't find anything even remotely close to what i'm currently doing. It was all text-based stuff, i swear some of you people have no imagination... it's almost like you _enjoy_ the idea of not suffering...

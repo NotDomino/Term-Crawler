@@ -12,10 +12,10 @@ class Map:
 		self.width = 100
 		self.height = 100
 
+		self.player = Player(self)
 		self.entities: List[Entity] = [
 			Friendly(self, '#', 1, 10),
 			Enemy(self, '@', 20, 20),
-			Player(self), 
 		]
 		self.centeredEntity = None
 		self.center_on(self.player)
@@ -43,6 +43,8 @@ class Map:
 
 		# render entities
 		for entity in self.entities:
+
+			entity.InputManager.handle()
 			if entity.x + self.x >= self.game.width:
 				continue
 			if entity.x + self.x <= 0:
@@ -57,6 +59,11 @@ class Map:
 				entity.char, entity.colour
 			)
 
+		self.game.print(
+				self.player.x + self.x,
+				self.player.y + self.y,
+				self.player.char, self.player.colour
+			)
 		self.game.term.stdscr.move(0, 0) # leave this here
 		
 		self.player.InputManager.handle()
@@ -68,13 +75,6 @@ class Map:
 			if entity.x == x and entity.y == y:
 				return entity
 		return None
-	
-	@property
-	def player(self) -> Player:
-		for entity in self.entities:
-			if not entity.isPlayer:
-				continue
-			return entity
 
 	@property
 	def center(self) -> Tuple[int, int]:
