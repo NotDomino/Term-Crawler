@@ -4,19 +4,17 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
 	from .entity import Entity
 
-# TODO: implement a way for enemy to pathfind player (probably going to use TCOD library, haven't decided yet)
+# TODO: implement a way for enemy to pathfind player (Likely A* pathfinding)
 class BasicMovement:
 	def __init__(self, entity: Entity) -> None:
 		self.entity = entity
 
 	def handle(self) -> None:
-		if random.randint(0, 1) == 0:
-			toX = random.randint(-1, 1)
-			self.entity.move(toX, 0)
+		toX = random.randint(-1, 1)
+		toY = random.randint(-1, 1)
+		self.entity.move(toX, 0)
+		self.entity.move(0, toY)
 			
-		else:
-			toY = random.randint(-1, 1)
-			self.entity.move(0, toY)
 
 class PlayerInput:
 	def __init__(self, entity: Entity) -> None:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List, Optional, Tuple
+import math
 
 from entities import Enemy, Friendly, Player
 if TYPE_CHECKING:
@@ -41,33 +42,69 @@ class Map:
 		if xMargin < -5:
 			self.x -= 1
 
+		# render walls n shit here
+		for coord in self.circle_coords(0, 0, 5):
+			self.place(coord[0], coord[1], '█')
+
+
 		# render entities
 		for entity in self.entities:
+			if entity.InputManager:
+				entity.InputManager.handle()
+			self.place(entity.x, entity.y, entity.char, entity.colour)
+			
 
-			entity.InputManager.handle()
-			if entity.x + self.x >= self.game.width:
-				continue
-			if entity.x + self.x <= 0:
-				continue
-			if entity.y + self.y >= self.game.height:
-				continue
-			if entity.y + self.y <= 0:
-				continue
-			self.game.print(
-				entity.x + self.x,
-				entity.y + self.y,
-				entity.char, entity.colour
-			)
+		"""
+		█ << these are to be used too
+			╔═╦═╗
+			║ ║ ║
+			╠═╬═╣
+			║ ║	║
+			╚═╩═╝
+		"""
+		# TODO write wall generator
 
-		self.game.print(
-				self.player.x + self.x,
-				self.player.y + self.y,
-				self.player.char, self.player.colour
-			)
+		self.place(self.player.x, self.player.y, self.player.char, self.player.colour)
 		self.game.term.stdscr.move(0, 0) # leave this here
 		
 		self.player.InputManager.handle()
 		
+	def place(self, x: int, y: int, text: str, attr = None) -> None:
+		"""Place stuff on the screen
+		args:
+			attr: eg: self.screen.attribs.yellow | self.screen.attribs.bold
+			center_align: bool = False
+		"""
+		if x + self.x >= self.game.width:
+			return
+		if x + self.x <= 0:
+			return
+		if y + self.y >= self.game.height:
+			return
+		if y + self.y <= 0:
+			return
+		self.game.print(
+			x + self.x,
+			y + self.y,
+			text, attr
+		)
+	
+	def circle_coords(self, xPos, yPos, radius: int):
+		toReturn = []
+		xScale = 1
+		hUnitsPerChar = 1 / xScale
+		hChars = (2 * radius) / hUnitsPerChar
+		
+		for j in range(0, 2*radius):
+			y = j + 0.5
+			for i in range(0, int(hChars)):
+				x = (i + 0.5) * hUnitsPerChar
+				dist = math.sqrt(
+					(x - radius) * (x - radius) +
+					(y - radius) * (y - radius))
+				if (dist < radius):
+					toReturn.append((int(x+xPos), int(y+yPos)))
+		return toReturn
 
 	def getEntityAtPos(self, x: int, y: int) -> Optional[Entity]:
 		"""Checks if an entity is in the given position"""

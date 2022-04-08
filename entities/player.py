@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List
 
 from .entity import Entity, Types
-from .InputManager import PlayerInput
+from .inputManager import PlayerInput
 
 if TYPE_CHECKING:
 	from map import Map

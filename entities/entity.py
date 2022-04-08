@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional
 from abc import ABC, abstractclassmethod
 
 
-from .InputManager import BasicMovement
+from .inputManager import BasicMovement
 if TYPE_CHECKING:
 	from map import Map
 

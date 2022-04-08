@@ -24,4 +24,4 @@ If you do decide to attempt to understand my code, feel free to suggest some thi
 I did a fair bit of googling for "2D RPG dungeon crawler in console" and couldn't find anything even remotely close to what i'm currently doing. It was all text-based stuff, i swear some of you people have no imagination... it's almost like you _enjoy_ the idea of not suffering...
 Also, i was bored a few days ago and thought "yeah this is a good idea" | *(spoilers, it wasn't a good idea)*
 # How do i run this code?
-download the whole file, there will be a requirements.txt, 'pip install' that file. open the directory in a terminal, and execute "py main.py" and wallah, some random unintelligible text on your screen!
+`pip install -r requirements.txt' open the directory in a terminal, and execute "py main.py" and wallah, hopefully some random unintelligible text on your screen!
