@@ -5,14 +5,14 @@ import curses.textpad as cr_text
 from .menu import Menu
 
 if TYPE_CHECKING:
-	from window.screen import Screen
+	from window.game import Game
 
 class Options(Menu):
 	def __init__(
 		self,
-		screen: Screen
+		game: Game
 	) -> None:
-		super().__init__(screen,
+		super().__init__(game,
 			opts = {
 				"resume": self.back, # returns to the game
 				"help": self.help,

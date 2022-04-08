@@ -5,14 +5,14 @@ from typing import TYPE_CHECKING
 from .entity import Entity, Types
 
 if TYPE_CHECKING:
-	from window.screen import Screen
+	from map import Map
 
 class Friendly(Entity):
 	"""Friendly NPC class"""
 
 	def __init__(
 		self,
-		screen: Screen,
+		map: Map,
 		sprite: str,
 		x: int,
 		y: int,
@@ -21,11 +21,12 @@ class Friendly(Entity):
 			"Ew, go away!"
 		]
 	):
-		super().__init__(screen, sprite, screen.attribs.green)
+		super().__init__(map, sprite, map.game.attribs.green)
 		self.x = x
 		self.y = y
+		self.type = Types.FRIENDLY
 		self.dialogue_opts = dialogue_opts
 	
 	def interact(self, entity) -> None:
 		if entity.type == Types.PLAYER:
-			self.screen.addLog(random.choice(self.dialogue_opts))
+			self.map.game.addLog(random.choice(self.dialogue_opts))

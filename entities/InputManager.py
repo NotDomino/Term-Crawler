@@ -24,10 +24,10 @@ class PlayerInput:
 
 	def handle(self) -> None:
 		"""Handles player movement"""
-		ch = self.entity.screen.getch()
+		ch = self.entity.map.game.getch()
 		match ch: # probably a better way of doing this, however i am lazy
 			case 27: #escape key
-				self.entity.screen.loadMenu("options") # loads the escape menu
+				self.entity.map.game.loadMenu("options") # loads the escape menu
 			
 			case 259 | 119: # up arrow | w
 				self.entity.move(0, -1)

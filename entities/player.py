@@ -5,17 +5,17 @@ from .entity import Entity, Types
 from .InputManager import PlayerInput
 
 if TYPE_CHECKING:
-	from window.screen import Screen
+	from map import Map
 
 
 class Player(Entity):
 	"""Player class"""
 	def __init__(
 		self,
-		screen: Screen,
+		map: Map,
 		sprite: str = '#',
 	):
-		super().__init__(screen, sprite)
+		super().__init__(map, sprite)
 		self.InputManager = PlayerInput(self)
 		self.type = Types.PLAYER
 		self.set_pos()
@@ -23,7 +23,7 @@ class Player(Entity):
 	@property
 	def stats(self) -> List[str]:
 		"""Returns dynamic statlist (WIP)"""
-		attribs = self.screen.attribs
+		attribs = self.map.game.attribs
 		hpPerc = self.hp / self.maxHP # HP percentage
 		fpPerc = self.fp / self.maxFP # FP percentage
 
@@ -53,5 +53,5 @@ class Player(Entity):
 	def interact(self, entity: Entity) -> None:
 		if entity.type == Types.FRIENDLY:
 			return
-		self.screen.addLog(f"Player was damaged for {entity.dmg} hp!")
+		self.map.game.addLog(f"Player was damaged for {entity.dmg} hp!")
 		self.damage(entity.dmg)

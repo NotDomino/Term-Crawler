@@ -2,9 +2,9 @@ from __future__ import annotations
 from typing import List, Optional, Tuple, TYPE_CHECKING
 import curses.textpad as cr_text
 
-from entities.entity import Types
 
 from .attributes import Attributes
+from map import Map
 from entities import Friendly, Player, Enemy, Entity
 from menus import Options
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 	from menus import Menu
 	from main import Terminal
 
-class Screen:
+class Game:
 	"""The Screen is anything inside that large rectangle (if you run the file)
 	"""
 
@@ -31,15 +31,10 @@ class Screen:
 		self.width = width
 		self.height = height
 		
-		self.entities: List[Entity] = [
-			Player(self), # Player should always be first in the 
-			Friendly(self, '#', 10, 10),
-			Enemy(self, '@', 20, 20),
-		]
-
-		# TODO: map class
-		self.walls = [] # not yet implemented
+		self.map = Map(self)
 		
+		#self.UI = UI(self) # TODO ui
+
 		self.log: List[Tuple[str, int]] = []
 		self.addLog('You wake up in a dungeon... where am i?', self.attribs.cyan | self.attribs.bold)
 		self.menus = {
@@ -92,20 +87,15 @@ class Screen:
 	def refresh(self) -> None:
 		"""Refreshes the screen"""
 		self.drawBorder()
+
 		if self.menu:  
 			return self.menu.run()
 
 		self.printStats()
 		self.printLog() # prints the log underneath the border
 
-		for entity in self.entities:
-			if entity.isPlayer:
-				player = entity # mild optimization
-				continue
-			entity.update() # updates each entity
+		self.map.render()
 
-		player.update()
-		
 	# --------------------------------------------------------
 	# HELPFUL STUFF
 	# --------------------------------------------------------
@@ -130,7 +120,7 @@ class Screen:
 		"""Prints the players stats"""
 		x = self.width + (self.term.width-self.width) //2
 
-		playerStats = self.player.stats
+		playerStats = self.map.player.stats
 
 		self.print(x, 0, "STATS", self.attribs.yellow | self.attribs.bold, True) # prints the STATS title
 
@@ -147,33 +137,20 @@ class Screen:
 		"""Print stuff to the screen
 		args:
 			attr: eg: self.screen.attribs.yellow | self.screen.attribs.bold
+			center_align: bool = False
 		"""
 		if center_align:
 			x -= len(text)//2
-
+			
 		if not attr:
 			return self.term.stdscr.addstr(y, x, text)
 		self.term.stdscr.addstr(y, x, text, attr)
-
-	def getEntityAtPos(self, x: int, y: int) -> Optional[Entity]:
-		"""Checks if an entity is in the given position"""
-		for entity in self.entities:
-			if entity.x == x and entity.y == y:
-				return entity
-		return None
-			
+		
 	@property
 	def center(self) -> Tuple[int, int]:
-		"""Returns center XY coordinates of Screen
+		"""Returns center XY coordinates of the screen
 
 		Returns:
 			Tuple[int, int]: (x, y)
 		"""
 		return (self.width//2, self.height//2)
-
-	@property
-	def player(self) -> Player:
-		for entity in self.entities:
-			if not entity.isPlayer:
-				continue
-			return entity

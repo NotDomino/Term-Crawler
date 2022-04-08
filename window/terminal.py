@@ -1,7 +1,7 @@
 """Not really much point touching this file"""
 from typing import NoReturn
 
-from .screen import Screen
+from .game import Game
 
 class Terminal:
 	"""Custom terminal wrapper for Curses. Don't really recommend touching this class"""
@@ -12,7 +12,7 @@ class Terminal:
 	
 		self.stdscr = stdscr
 		self.height, self.width = self.dimensions # terminal dimensions
-		self.screen = Screen(
+		self.screen = Game(
 			self,
 			0, 0,
 			self.width-20, self.height-10	

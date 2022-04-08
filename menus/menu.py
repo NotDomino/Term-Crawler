@@ -3,13 +3,13 @@ from typing import TYPE_CHECKING, Dict
 from abc import ABC, abstractclassmethod
 
 if TYPE_CHECKING:
-	from window.screen import Screen
+	from window.game import Game
 
 class Menu(ABC):
 	"""Baseclass menu"""
 	def __init__(
 		self,
-		screen: Screen,
+		screen: Game,
 		opts: Dict[str, function],
 		title: str
 	) -> None:
