@@ -15,9 +15,24 @@ def mapGen() -> List[Tuple[int, int]]:
 
 	# connect first set of circles
 	circle1 = Circle(0, 0, 5)
-	circle2 = Circle(20, 0, 5)
-	line = lineGen(circle1.center, circle2.center, girth=2)
+	circle2 = Circle(2, -50, 5)
+	line = lineGen(circle1.center, circle2.center, girth=1)
 	ls =  mergeLists(circle1.coords, circle2.coords, line)
+
+	# connect second set of circles
+	circle3 = Circle(0, 20, 5)
+	circle4 = Circle(20, 0, 5)
+	line2 = lineGen(circle3.center, circle4.center, girth=1)
+	ls =  mergeLists(ls, circle3.coords, circle4.coords, line2)
+	
+	# #connect center of 4th circle to random rectangle
+	# rect = Rectangle(
+	# 	randint(-50, 50),
+	# 	randint(-50, 50),
+	# 	10, 10
+	# )
+	# line3 = lineGen(circle4.center, rect.center, girth=1)	
+	# ls =  mergeLists(ls, rect.coords, line3)
 
 	return ls
 

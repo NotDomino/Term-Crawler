@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-import math
+from math import radians, cos, sin
 from typing import List, Tuple
 
 
 def lineGen(coord1, coord2, girth):
 	ret = [coord1, coord2]
 
-	for x in range(abs(coord1[0] - coord2[0])):
+	for x in ((range(coord1[0], coord2[0])) if coord1[0] < coord2[0] else range(coord2[0], coord1[0])):
 		for xThickness in range(1-girth if girth > 0 else 0, 1+girth):
 			for yThickness in range(1-girth if girth > 0 else 0, 1+girth):
 				ret.append((
@@ -14,8 +14,6 @@ def lineGen(coord1, coord2, girth):
 					(round((coord1[1]-coord2[1])/(coord1[0]-coord2[0]) * (x-coord1[0]) + coord1[1]) + yThickness)
 				))
 	return ret
-
-print(lineGen((0, 0), (10, 0), 1))
 
 @dataclass
 class Rectangle:
@@ -53,21 +51,18 @@ class Circle:
 	def __post_init__(self) -> None:
 		self.coords = self.genCoords()
 
+	@staticmethod
+	def circleCoords():
+		return [( (round(cos(radians(q)), 10)) , (round(sin(radians(q)), 10)) ) for q in range(0, 361)]#passing a third value into this range can play with circle thickness (try numbers like 3 and 6)
+
 	def genCoords(self):
-		"""generates a list of coordinates that represent a circle of a given radius as given x, y pos"""
-		toReturn = []
-		hChars = (2 * self.radius)
-		
-		for y in range(0, 2*self.radius):
-			for x in range(0, int(hChars)):
-				dist = math.sqrt(
-					(x - self.radius) * (x - self.radius) +
-					(y - self.radius) * (y - self.radius))
-				if (dist < self.radius):
-					toReturn.append((int(x+self.xPos)*2, int(y+self.yPos)))
-					toReturn.append((int(x+self.xPos)*2+1, int(y+self.yPos)))
-		return toReturn
-	
+		newcoords = []
+		for x, y in self.circleCoords():
+			for siz in range(0, self.radius):
+				coord = (round(self.xPos+x*siz), round(self.yPos+y*siz))
+				if not (coord in newcoords): newcoords.append(coord) 
+		return newcoords
+
 	@property
 	def center(self) -> Tuple[int, int]:
-		return self.coords[len(self.coords)//2]
+		return (self.xPos, self.yPos)

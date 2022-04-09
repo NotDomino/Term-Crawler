@@ -9,6 +9,9 @@ if TYPE_CHECKING:
 class UI:
 	def __init__(self, game: Game) -> None:
 		self.game = game
+
+		self.lastKeyInput = None
+		
 		self.log: List[Tuple[str, int]] = []
 		self.addLog('You wake up in a dungeon... where am i?', self.game.attribs.cyan | self.game.attribs.bold)
 
@@ -120,6 +123,7 @@ class UI:
 	def printDebug(self) -> None:
 		self.print(2, 2, "DEBUG", self.game.attribs.magenta | self.game.attribs.bold)
 		self.print(2, 3, f"Player XY: {self.game.map.player.x}|{self.game.map.player.y}")
+		self.print(2, 4, f"Last key input: {self.lastKeyInput}")
 		
 	def addLog(self, text: str, attrib: int = None) -> None:
 		"""Adds to the text log"""

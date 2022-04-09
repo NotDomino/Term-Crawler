@@ -67,9 +67,9 @@ class Entity(Actor):
 			return ent.interact(self)
 			
 		ground = self.map.getGroundAtPos(self.x+x, self.y+y)
-		if ground:
-			self.x += x
-			self.y += y
+		# if ground:
+		self.x += x
+		self.y += y
 	
 	@property
 	def isPlayer(self) -> bool:
