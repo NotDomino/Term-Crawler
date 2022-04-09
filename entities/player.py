@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List
 
 from .entity import Entity, Types
-from .inputManager import PlayerInput
+from .inputManager import DefaultPlayerInput
 
 if TYPE_CHECKING:
 	from map import Map
@@ -16,7 +16,7 @@ class Player(Entity):
 		sprite: str = '#',
 	):
 		super().__init__(map, sprite)
-		self.InputManager = PlayerInput(self)
+		self.InputManager = DefaultPlayerInput(self)
 		self.type = Types.PLAYER
 		self.set_pos()
 		

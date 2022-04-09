@@ -23,10 +23,10 @@ class Options(Menu):
 			title = "Options"
 		) 
 
-	def run(self):
+	def render(self):
 		offset = 3 # the offset for how far away from the "menu" text the options are
-		width, height = self.screen.center
-		self.screen.print(
+		width, height = self.game.center
+		self.game.UI.print(
 			width, height-offset,
 			self.title,
 			center_align=True
@@ -34,15 +34,15 @@ class Options(Menu):
 		
 		for i, option in enumerate(self.opts):
 			if self.index != i:
-				self.screen.print(
+				self.game.UI.print(
 					width, height+i,
 					option,
 					center_align=True
 				) # unselected option
 				continue
-			self.screen.print(
+			self.game.UI.print(
 				width, height+i,
-				option, self.screen.attribs.standout,
+				option, self.game.attribs.standout,
 				center_align = True
 			) # selected option
 
@@ -59,17 +59,17 @@ class Options(Menu):
 		self.back()
 
 	def back(self):
-		self.screen.menu = None
+		self.game.menu = None
 
 	def help(self):
 		"""Help menu"""
-		self.screen.term.stdscr.clear() # mandatory, leave it alone
-		self.screen.drawBorder()
-		bold = self.screen.attribs.bold
-		xoff = self.screen.center[0]# offset everything here by these values
+		self.game.term.stdscr.clear() # mandatory, leave it alone
+		self.game.drawBorder()
+		bold = self.game.attribs.bold
+		xoff = self.game.center[0]# offset everything here by these values
 
-		self.screen.print(xoff, 1, "HELP MENU", bold, True)
-		self.screen.print(xoff//2, 3, "Gameplay", bold, True)
+		self.game.UI.print(xoff, 1, "HELP MENU", bold, True)
+		self.game.UI.print(xoff//2, 3, "Gameplay", bold, True)
 
 		# prints gameplay part of menus
 		gameplay = [
@@ -80,11 +80,11 @@ class Options(Menu):
 			"esc | options menu"
 		]
 		for i in range(len(gameplay)):
-			self.screen.print((xoff//2)-6, i+4, gameplay[i])
+			self.game.print((xoff//2)-6, i+4, gameplay[i])
 		
-		self.screen.print(xoff, 3, "Menus", bold, True)
-		self.screen.print(xoff-6, 4, "W/↑ | scroll up")
-		self.screen.print(xoff-6, 5, "S/↓ | scroll down", bold)
+		self.game.UI.print(xoff, 3, "Menus", bold, True)
+		self.game.UI.print(xoff-6, 4, "W/↑ | scroll up")
+		self.game.UI.print(xoff-6, 5, "S/↓ | scroll down", bold)
 
-		self.screen.print(self.screen.x+1, self.screen.height-1, "Press any key to continue...")
-		self.screen.getch() # to pause on the help screen
+		self.game.UI.print(self.game.x+1, self.game.height-1, "Press any key to continue...")
+		self.game.getch() # to pause on the help screen

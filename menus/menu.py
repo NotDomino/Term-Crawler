@@ -13,7 +13,7 @@ class Menu(ABC):
 		opts: Dict[str, function],
 		title: str
 	) -> None:
-		self.screen = screen
+		self.game = screen
 		self.opts: dict = opts
 		self.index: int = 0
 		self.title = title
@@ -29,10 +29,10 @@ class Menu(ABC):
 			self.index = 0
 	
 	def getKeyIn(self) -> None:
-		ch = self.screen.getch()
+		ch = self.game.getch()
 		match ch:
 			case 27: #escape key goes back to game
-				self.screen.menu = None
+				self.game.menu = None
 
 			case 259 | 119: # up arrow | w
 				self.__scrollUp()
@@ -44,5 +44,5 @@ class Menu(ABC):
 				self.opts[ list(self.opts.keys())[self.index] ]()
 	
 	@abstractclassmethod
-	def run() -> None:
+	def render() -> None:
 		raise NotImplementedError

@@ -30,7 +30,7 @@ class Map:
 		self.y = -self.centeredEntity.y + self.game.height//2
 
 	def render(self) -> None:
-		# adjust camera first before rendering entities
+		# adjust camera on y axis
 		yMargin = self.game.height//2 - (self.centeredEntity.y + self.y)		
 		if yMargin > 5:
 			self.y += 1
@@ -44,8 +44,8 @@ class Map:
 			self.x -= 1
 
 		# render walls n shit here
-		for coord in self.circle_coords(0, 0, 2):
-			self.place(coord[0], coord[1], '█')
+		# for coord in self.circle_coords(0, 0, 10):
+		# 	self.place(coord[0], coord[1], '█')
 
 		# render entities
 		for entity in self.entities:
@@ -61,7 +61,7 @@ class Map:
 			║ ║	║
 			╚═╩═╝
 		"""
-		# TODO write wall generator
+		# TODO write wall generator (based on above image)
 
 		self.place(self.player.x, self.player.y, self.player.char, self.player.colour)
 		self.game.term.stdscr.move(0, 0) # leave this here
@@ -74,6 +74,7 @@ class Map:
 			attr: eg: self.screen.attribs.yellow | self.screen.attribs.bold
 			center_align: bool = False
 		"""
+		# if the entity isn't on the screen, don't render it
 		if x + self.x >= self.game.width:
 			return
 		if x + self.x <= 0:
@@ -82,30 +83,12 @@ class Map:
 			return
 		if y + self.y <= 0:
 			return
-		self.game.print(
+		self.game.UI.print(
 			x + self.x,
 			y + self.y,
 			text, attr
 		)
-	
-	def circle_coords(self, xPos, yPos, radius: int):
-		toReturn = []
-		xScale = 1
-		hUnitsPerChar = 1 / xScale
-		hChars = (2 * radius) / hUnitsPerChar
 		
-		for j in range(0, 2*radius):
-			y = j + 0.5
-			for i in range(0, int(hChars)):
-				x = (i + 0.5) * hUnitsPerChar
-				dist = math.sqrt(
-					(x - radius) * (x - radius) +
-					(y - radius) * (y - radius))
-				if (dist < radius):
-					toReturn.append((int(x+xPos)*2, int(y+yPos)))
-					toReturn.append((int(x+xPos)*2+1, int(y+yPos)))
-		return toReturn
-
 	def getEntityAtPos(self, x: int, y: int) -> Optional[Entity]:
 		"""Checks if an entity is in the given position"""
 		for entity in self.entities:

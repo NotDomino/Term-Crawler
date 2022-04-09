@@ -1,0 +1,115 @@
+from __future__ import annotations
+import curses.textpad as cr_text
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+	from .game import Game
+	
+class UI:
+	def __init__(self, game: Game) -> None:
+		self.game = game
+	
+	def OK(self, title, text) -> None:
+		enterText = 'enter to continue >>'
+		text = self.textWrap(text, self.game.width//4)
+
+		width = len(text[0])
+		if len(title) > width:
+			width = len(title)
+		if len(enterText) > width:
+			width = len(enterText)
+		height = len(text)
+		width += 5
+		height += 2
+
+		x = self.game.width//2 - width//2
+		y = self.game.height//2 - height//2
+		
+		while True:
+			self.draw_box(x, y, width, height)
+			self.print(x+width//2, y, title, self.game.attribs.standout, center_align=True)
+			for i, item in enumerate(text):
+				self.print(x+1, y+i+1, item)
+
+			self.print(x+width//2+1, y+height, enterText, self.game.attribs.standout, True)
+
+			self.game.term.stdscr.refresh()
+
+			ch = self.game.getch()
+			match ch:
+				case 10: #enter key
+					return
+				case 27: #escape key
+					self.game.loadMenu("options") # loads the escape menu
+	
+	@staticmethod
+	def textWrap(string: str, width: int):
+		"""Text wrapper"""
+		return [string[i:i + width] for i in range(0, len(string), width)]
+	
+	def draw_box(self, x, y, width, height) -> None:
+		# clear inside of rect area
+		for xIter in range(width):
+			for yIter in range(height):
+				self.print(x+xIter, y+yIter, '.', self.game.attribs.clear)
+
+		for xIter in range(width):
+			self.print(x+xIter, y, '═')
+			self.print(x+xIter, y+height, '═')
+
+		for xIter in range(height):
+			self.print(x, y+xIter, '║')
+			self.print(x+width, y+xIter, '║')
+
+		#replace 4 corners
+		self.print(x, y, '╔')
+		self.print(x+width, y, '╗')
+		self.print(x, y+height, '╚')
+		self.print(x+width, y+height, '╝')
+	
+	def drawBorder(self) -> None:
+		"""draws the rectangular border"""
+		cr_text.rectangle(
+			self.game.term.stdscr, 
+			self.game.y, self.game.x, 
+			self.game.height, self.game.width
+		)
+	
+	def print(
+		self,
+		x: int,
+		y: int,
+		text: str,
+		attr = None,
+		center_align: bool = False
+	) -> None:
+		"""Print stuff to the screen
+		args:
+			attr: eg: self.screen.attribs.yellow | self.screen.attribs.bold
+			center_align: bool = False
+		"""
+		scr = self.game.term.stdscr
+
+		if center_align:
+			x -= len(text)//2
+			
+		if not attr:
+			return scr.addstr(y, x, text)
+		scr.addstr(y, x, text, attr)
+
+	def printStats(self) -> None:
+		"""Prints the players stats"""
+		x = self.game.width + (self.game.term.width-self.game.width) //2
+
+		playerStats = self.game.map.player.stats
+
+		self.print(x, 0, "STATS", self.game.attribs.yellow | self.game.attribs.bold, True) # prints the STATS title
+
+		for i in range(len(playerStats)):
+			stat = playerStats[i]
+			if type(stat) == tuple: # if the text has custom attributes assigned to it
+				stat, attrib = stat
+				self.print(x, i+2, stat, attrib, True)
+				continue
+
+			self.print(x, i+2, stat, self.game.attribs.yellow, True)

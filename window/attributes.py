@@ -9,6 +9,7 @@ class Attributes:
 		curses.init_pair(5, curses.COLOR_YELLOW, curses.COLOR_BLACK)
 		curses.init_pair(6, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
 		curses.init_pair(7, curses.COLOR_CYAN, curses.COLOR_BLACK)
+		curses.init_pair(8, curses.COLOR_BLACK, curses.COLOR_BLACK)
 		
 		# colours
 		self.default = curses.color_pair(1)
@@ -18,6 +19,7 @@ class Attributes:
 		self.yellow = curses.color_pair(5)
 		self.magenta = curses.color_pair(6)
 		self.cyan = curses.color_pair(7)
+		self.clear = curses.color_pair(8)
 
 		# attribs
 		self.blink = curses.A_BLINK

@@ -1,5 +1,0 @@
-import math
-
-
-
-print(coords)

@@ -37,7 +37,7 @@ class Entity(ABC):
 		self.fp = self.maxFP
 		self.dmg = 2
 		self.block = True
-		self.InputManager = BasicMovement(self)
+		self.InputManager = None# BasicMovement(self)
 	
 	def die(self) -> None:
 		"""Only run if the entity has died"""

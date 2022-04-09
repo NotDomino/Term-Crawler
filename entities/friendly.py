@@ -29,4 +29,4 @@ class Friendly(Entity):
 	
 	def interact(self, entity) -> None:
 		if entity.type == Types.PLAYER:
-			self.map.game.addLog(random.choice(self.dialogue_opts))
+			self.map.game.UI.OK("Entity Interaction", random.choice(self.dialogue_opts))

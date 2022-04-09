@@ -1,11 +1,10 @@
 from __future__ import annotations
-from typing import List, Optional, Tuple, TYPE_CHECKING
-import curses.textpad as cr_text
+from typing import List, Tuple, TYPE_CHECKING
 
 
 from .attributes import Attributes
+from .UI import UI
 from map import Map
-from entities import Friendly, Player, Enemy, Entity
 from menus import Options
 
 if TYPE_CHECKING:
@@ -32,8 +31,7 @@ class Game:
 		self.height = height
 		
 		self.map = Map(self)
-		
-		#self.UI = UI(self) # TODO ui
+		self.UI = UI(self)
 
 		self.log: List[Tuple[str, int]] = []
 		self.addLog('You wake up in a dungeon... where am i?', self.attribs.cyan | self.attribs.bold)
@@ -52,7 +50,7 @@ class Game:
 	def loadMenu(self, name: str) -> None:
 		"""loads provided menu"""
 		self.menu = self.menus[name](self)
-	
+
 	# --------------------------------------------------------
 	# LOGS
 	# --------------------------------------------------------
@@ -74,7 +72,7 @@ class Game:
 		# TODO: add keybind to print all logs into a menu (v or L probably)
 		# TODO: don't delete oldest logs, just print most recent logs
 		for index, log in enumerate(self.log):
-			self.print(0, self.height+index+1, log[0], log[1])
+			self.UI.print(0, self.height+index+1, log[0], log[1])
 
 	def clearLog(self) -> None:
 		"""Clears the whole text log"""
@@ -86,14 +84,14 @@ class Game:
 
 	def refresh(self) -> None:
 		"""Refreshes the screen"""
-		self.drawBorder()
-
+		self.UI.drawBorder()
+		
 		if self.menu:  
-			return self.menu.run()
+			return self.menu.render()
 
-		self.printStats()
+		self.UI.printStats()
 		self.printLog() # prints the log underneath the border
-
+		
 		self.map.render()
 
 	# --------------------------------------------------------
@@ -107,45 +105,7 @@ class Game:
 	def getch(self) -> int:
 		"""gets key input"""
 		return self.term.stdscr.getch()
-
-	def drawBorder(self) -> None:
-		"""draws the rectangular border"""
-		cr_text.rectangle(
-			self.term.stdscr, 
-			self.y, self.x, 
-			self.height, self.width
-		)
-		
-	def printStats(self) -> None:
-		"""Prints the players stats"""
-		x = self.width + (self.term.width-self.width) //2
-
-		playerStats = self.map.player.stats
-
-		self.print(x, 0, "STATS", self.attribs.yellow | self.attribs.bold, True) # prints the STATS title
-
-		for i in range(len(playerStats)):
-			stat = playerStats[i]
-			if type(stat) == tuple: # if the text has custom attributes assigned to it
-				stat, attrib = stat
-				self.print(x, i+2, stat, attrib, True)
-				continue
-
-			self.print(x, i+2, stat, self.attribs.yellow, True)
-
-	def print(self, x: int, y: int, text: str, attr = None, center_align: bool = False) -> None:
-		"""Print stuff to the screen
-		args:
-			attr: eg: self.screen.attribs.yellow | self.screen.attribs.bold
-			center_align: bool = False
-		"""
-		if center_align:
-			x -= len(text)//2
-			
-		if not attr:
-			return self.term.stdscr.addstr(y, x, text)
-		self.term.stdscr.addstr(y, x, text, attr)
-		
+	
 	@property
 	def center(self) -> Tuple[int, int]:
 		"""Returns center XY coordinates of the screen
