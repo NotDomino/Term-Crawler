@@ -7,7 +7,7 @@
 	- [ ] implement items
 
 # Player
-- [ ] implement statistics (possibly on screen somewhere)
+- [x] implement statistics (possibly on screen somewhere)
 - [ ] level up system
 - [ ] equipment system
 - [ ] class system
@@ -25,10 +25,10 @@
 - [ ] make space for text on screen (story / NPCs) (?)
 - [ ] main menu
 - [ ] level up menu
-- [ ] options menu
+- [x] options menu
 - [ ] inventory menu
 - [ ] NPC shop menu (?)
-- [ ] allow chatting with NPC's
+- [x] allow chatting with NPC's
 - [ ] pressing '/' allows you to "hover" over other entities and it will tell you what it is
 
 # what i'd like to be able to implement in the future

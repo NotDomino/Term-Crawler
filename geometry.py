@@ -1,23 +1,38 @@
+from dataclasses import dataclass
 import math
 from typing import List, Tuple
 
 
-def lineConnector(
-	xy: Tuple[int, int],
-	xy2: Tuple[int, int],
-	girth
-) -> List[Tuple[int, int]]:
-	toReturn = [
-		(xy[0], xy[1]), # beginning pos
-		(xy2[0], xy2[1]) # end pos
-	]
-	m = (xy[1]-xy2[1])/(xy[0]-xy2[0])
-	
-	for x in range(abs(xy[0] - xy2[0])):
-		for xThickness in range(1-girth if girth > 0 else 0, 1+girth):
-			for yThickness in range(1-girth if girth > 0 else 0, 1+girth):
-				toReturn.append((x + xThickness, round(m * (x-xy[0]) + xy[1]) + yThickness))
-	return toReturn
+def lineGen(coord1, coord2, girth):
+	ret = []
+	x0, y0 = coord1
+	x1, y1 = coord2
+	for _  in range(girth):
+		ret = ret + list(set(bresenham(x0, y0, x1, y1)) - set(ret))
+		ret = ret + list(set(bresenham(x0+_, y0, x1+_, y1)) - set(ret))
+		ret = ret + list(set(bresenham(x0-_, y0, x1-_, y1)) - set(ret))
+		ret = ret + list(set(bresenham(x0, y0+_, x1, y1+_)) - set(ret))
+		ret = ret + list(set(bresenham(x0, y0-_, x1, y1-_)) - set(ret))
+	return ret
+
+
+def bresenham(x0, y0, x1, y1):
+	deltax = x1-x0
+	dxsign = int(abs(deltax)/deltax)
+	deltay = y1-y0
+	dysign = int(abs(deltay)/deltay)
+	deltaerr = abs(deltay/deltax)
+	error = 0
+	y = y0
+	for x in range(x0, x1, dxsign):
+		yield x, y
+		error = error + deltaerr
+		while error >= 0.5:
+			y += dysign
+			error -= 1
+	yield x1, y1
+
+print(lineGen((0, 0), (5, 5), 2))
 
 def square_coords(
 	xPos: int,
@@ -34,24 +49,28 @@ def square_coords(
 			toReturn.append((xPos+xIter*2+1, yPos+yIter))
 	return toReturn
 
-def circle_coords(
-	xPos: int,
-	yPos: int,
+@dataclass
+class Circle:
+	xPos: int
+	yPos: int
 	radius: int
-):
-	"""Returns a list of coordinates that represent a circle of a given radius as given x, y pos"""
-	toReturn = []
-	hUnitsPerChar = 1
-	hChars = (2 * radius) / hUnitsPerChar
+
+	def coords(self):
+		"""Returns a list of coordinates that represent a circle of a given radius as given x, y pos"""
+		toReturn = []
+		hChars = (2 * self.radius)
+		
+		for y in range(0, 2*self.radius):
+			for x in range(0, int(hChars)):
+				dist = math.sqrt(
+					(x - self.radius) * (x - self.radius) +
+					(y - self.radius) * (y - self.radius))
+				if (dist < self.radius):
+					toReturn.append((int(x+self.xPos)*2, int(y+self.yPos)))
+					toReturn.append((int(x+self.xPos)*2+1, int(y+self.yPos)))
+		return toReturn
 	
-	for j in range(0, 2*radius):
-		y = j + 0.5
-		for i in range(0, int(hChars)):
-			x = (i + 0.5) * hUnitsPerChar
-			dist = math.sqrt(
-				(x - radius) * (x - radius) +
-				(y - radius) * (y - radius))
-			if (dist < radius):
-				toReturn.append((int(x+xPos)*2, int(y+yPos)))
-				toReturn.append((int(x+xPos)*2+1, int(y+yPos)))
-	return toReturn
+	@property
+	def center(self) -> Tuple[int, int]:
+		coord = self.coords()
+		return coord[len(coord)//2]

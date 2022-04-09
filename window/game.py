@@ -40,6 +40,7 @@ class Game:
 		}
 
 		self.menu: Menu = None
+		self.debug = False
 
 	# --------------------------------------------------------
 	# MENUS
@@ -63,6 +64,8 @@ class Game:
 		self.UI.printStats()
 		self.UI.printLog() # prints the log underneath the border
 		
+		
+
 		self.map.render()
 
 	# --------------------------------------------------------

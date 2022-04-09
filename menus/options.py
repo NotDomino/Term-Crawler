@@ -7,6 +7,8 @@ from .menu import Menu
 if TYPE_CHECKING:
 	from window.game import Game
 
+enabled = lambda x: '☒' if x else '☐'
+
 class Options(Menu):
 	def __init__(
 		self,
@@ -18,10 +20,11 @@ class Options(Menu):
 				"help": self.help,
 				"save": self.save,
 				"load": self.load,
+				f"{enabled(game.debug)} Debug": self.toggleDebug,
 				"exit": exit,
 			},
 			title = "Options"
-		) 
+		)
 
 	def render(self):
 		offset = 3 # the offset for how far away from the "menu" text the options are
@@ -88,3 +91,14 @@ class Options(Menu):
 
 		self.game.UI.print(self.game.x+1, self.game.height-1, "Press any key to continue...")
 		self.game.getch() # to pause on the help screen
+	
+	def toggleDebug(self) -> None:
+		index = list(self.opts.keys()).index(f'{enabled(self.game.debug)} Debug')
+		
+		self.game.debug = not self.game.debug
+		
+		self.game.menu = Options(self.game)
+		self.game.menu.index = index
+
+		self.game.UI.addLog('Debug mode toggled!', self.game.attribs.magenta)
+		self.game.UI.addLog(f"State: {self.game.debug}", self.game.attribs.magenta)

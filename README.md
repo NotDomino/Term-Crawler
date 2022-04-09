@@ -15,10 +15,12 @@ If you do decide to attempt to understand my code, feel free to suggest some thi
 - basic enemy movement
 - 'ESC' for menu
 - logs
-- Player stats
-- Fancy looking rectangle
+- On screen Player stats
+- Fancy looking boxes
 - Map Scrolling
 - Shitty code
+- automatic geometry
+- NPC interaction
 
 # Why? what's wrong with you?
 I did a fair bit of googling for "2D RPG dungeon crawler in console" and couldn't find anything even remotely close to what i'm currently doing. It was all text-based stuff, i swear some of you people have no imagination... it's almost like you _enjoy_ the idea of not suffering...

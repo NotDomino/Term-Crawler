@@ -42,5 +42,3 @@ class DefaultPlayerInput:
 					
 				case 261 | 100: # right arrow | d
 					return self.entity.move(1, 0)
-
-				

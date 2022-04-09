@@ -18,7 +18,7 @@ class Player(Entity):
 		super().__init__(map, sprite)
 		self.InputManager = DefaultPlayerInput(self)
 		self.type = Types.PLAYER
-		self.set_pos()
+		self.set_pos(10, 0)
 		
 	@property
 	def stats(self) -> List[str]:

@@ -1,6 +1,7 @@
 from __future__ import annotations
 import curses.textpad as cr_text
 from typing import TYPE_CHECKING, List, Tuple
+import curses
 
 if TYPE_CHECKING:
 	from .game import Game
@@ -10,7 +11,7 @@ class UI:
 		self.game = game
 		self.log: List[Tuple[str, int]] = []
 		self.addLog('You wake up in a dungeon... where am i?', self.game.attribs.cyan | self.game.attribs.bold)
-	
+
 	def OK(self, title, text) -> None:
 		enterText = 'enter to continue >>'
 		text = self.textWrap(text, self.game.width//4)
@@ -116,6 +117,10 @@ class UI:
 
 			self.print(x, i+2, stat, self.game.attribs.yellow, True)
 	
+	def printDebug(self) -> None:
+		self.print(2, 2, "DEBUG", self.game.attribs.magenta | self.game.attribs.bold)
+		self.print(2, 3, f"Player XY: {self.game.map.player.x}|{self.game.map.player.y}")
+		
 	def addLog(self, text: str, attrib: int = None) -> None:
 		"""Adds to the text log"""
 		if not attrib:
