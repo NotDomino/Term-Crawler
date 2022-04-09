@@ -1,12 +1,32 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, List, Optional, Tuple
 
+from random import randint
 from entities import Enemy, Friendly, Player
 from entities.floor import Floor
-from geometry import Circle, lineGen
+from geometry import Circle, lineGen, Rectangle
 if TYPE_CHECKING:
 	from entities import Entity
 	from window.game import Game
+
+
+def mapGen() -> List[Tuple[int, int]]:
+	"""Returns a list of tupled coordinates to convert to walls"""
+
+	# connect first set of circles
+	circle1 = Circle(0, 0, 5)
+	circle2 = Circle(20, 0, 5)
+	line = lineGen(circle1.center, circle2.center, girth=2)
+	ls =  mergeLists(circle1.coords, circle2.coords, line)
+
+	return ls
+
+def mergeLists(*args):
+	"""Merges lists, deleting any duplicates"""
+	ret = []
+	for arg in args:
+		ret = ret + list(set(arg) - set(ret))
+	return ret
 
 class Map:
 	def __init__(self, game: Game) -> None:
@@ -21,12 +41,7 @@ class Map:
 		]
 		self.floors: List[Floor] = []
 		
-		circle1 = Circle(0, 0, 5)
-		circle2 = Circle(10, 30, 5)
-		line = list(lineGen(circle1.center, circle2.center, girth=3))
-		toFloor = circle1.coords() + circle2.coords() + line
-
-		for coord in toFloor:
+		for coord in mapGen():
 			exists = False
 			for floor in self.floors:
 				if floor.x == coord[0] and floor.y == coord[1]:
