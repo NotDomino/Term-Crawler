@@ -1,6 +1,6 @@
 from __future__ import annotations
 import curses.textpad as cr_text
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Tuple
 
 if TYPE_CHECKING:
 	from .game import Game
@@ -8,6 +8,8 @@ if TYPE_CHECKING:
 class UI:
 	def __init__(self, game: Game) -> None:
 		self.game = game
+		self.log: List[Tuple[str, int]] = []
+		self.addLog('You wake up in a dungeon... where am i?', self.game.attribs.cyan | self.game.attribs.bold)
 	
 	def OK(self, title, text) -> None:
 		enterText = 'enter to continue >>'
@@ -43,7 +45,7 @@ class UI:
 					self.game.loadMenu("options") # loads the escape menu
 	
 	@staticmethod
-	def textWrap(string: str, width: int):
+	def textWrap(string: str, width: int) -> List[str]:
 		"""Text wrapper"""
 		return [string[i:i + width] for i in range(0, len(string), width)]
 	
@@ -113,3 +115,26 @@ class UI:
 				continue
 
 			self.print(x, i+2, stat, self.game.attribs.yellow, True)
+	
+	def addLog(self, text: str, attrib: int = None) -> None:
+		"""Adds to the text log"""
+		if not attrib:
+			attrib = self.game.attribs.yellow
+
+		self.log.append((text, attrib))
+		
+		# TODO: don't delete oldest logs, just print most recent logs
+		# delete oldest logs
+		while len(self.log) > (self.game.term.height - self.game.height) - 1:
+			self.log.pop(0)
+	
+	def printLog(self) -> None:
+		"""Prints the text log"""
+		# TODO: add keybind to print all logs into a menu (v or L probably)
+		# TODO: don't delete oldest logs, just print most recent logs
+		for index, log in enumerate(self.log):
+			self.print(0, self.game.height +index+1, log[0], log[1])
+
+	def clearLog(self) -> None:
+		"""Clears the whole text log"""
+		self.log = []

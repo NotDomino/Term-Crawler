@@ -53,5 +53,5 @@ class Player(Entity):
 	def interact(self, entity: Entity) -> None:
 		if entity.type == Types.FRIENDLY:
 			return
-		self.map.game.addLog(f"Player was damaged for {entity.dmg} hp!")
+		self.map.game.UI.addLog(f"Player was damaged for {entity.dmg} hp!")
 		self.damage(entity.dmg)

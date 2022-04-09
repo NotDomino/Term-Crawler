@@ -33,8 +33,6 @@ class Game:
 		self.map = Map(self)
 		self.UI = UI(self)
 
-		self.log: List[Tuple[str, int]] = []
-		self.addLog('You wake up in a dungeon... where am i?', self.attribs.cyan | self.attribs.bold)
 		self.menus = {
 			"main": None, # needs implementing
 			"options": Options, 
@@ -52,33 +50,6 @@ class Game:
 		self.menu = self.menus[name](self)
 
 	# --------------------------------------------------------
-	# LOGS
-	# --------------------------------------------------------
-	
-	def addLog(self, text: str, attrib: int = None) -> None:
-		"""Adds to the text log"""
-		if not attrib:
-			attrib = self.attribs.yellow
-
-		self.log.append((text, attrib))
-		
-		# TODO: don't delete oldest logs, just print most recent logs
-		# delete oldest logs
-		while len(self.log) > (self.term.height - self.height) - 1:
-			self.log.pop(0)
-	
-	def printLog(self) -> None:
-		"""Prints the text log"""
-		# TODO: add keybind to print all logs into a menu (v or L probably)
-		# TODO: don't delete oldest logs, just print most recent logs
-		for index, log in enumerate(self.log):
-			self.UI.print(0, self.height+index+1, log[0], log[1])
-
-	def clearLog(self) -> None:
-		"""Clears the whole text log"""
-		self.log = []
-
-	# --------------------------------------------------------
 	# MAIN
 	# --------------------------------------------------------
 
@@ -90,7 +61,7 @@ class Game:
 			return self.menu.render()
 
 		self.UI.printStats()
-		self.printLog() # prints the log underneath the border
+		self.UI.printLog() # prints the log underneath the border
 		
 		self.map.render()
 

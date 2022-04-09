@@ -22,5 +22,5 @@ class Enemy(Entity):
 		"""How another entity interacts with this enemy"""
 		if entity.type == Types.FRIENDLY:
 			return
-		self.map.game.addLog(f"enemy was damaged for {entity.dmg} hp!")
+		self.map.game.UI.addLog(f"enemy was damaged for {entity.dmg} hp!")
 		self.damage(entity.dmg)
