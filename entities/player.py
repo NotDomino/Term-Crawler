@@ -2,28 +2,25 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List
 
 from .entity import Entity, Types
-from .inputManager import DefaultPlayerInput
-
 if TYPE_CHECKING:
-	from map import Map
+	from ..window.game import Game
 
 
 class Player(Entity):
 	"""Player class"""
 	def __init__(
 		self,
-		map: Map,
+		game: Game,
 		sprite: str = '#',
 	):
-		super().__init__(map, sprite)
-		self.InputManager = DefaultPlayerInput(self)
+		super().__init__(None, 10, 0, sprite)
+		self.game = game
 		self.type = Types.PLAYER
-		self.set_pos(10, 0)
 		
 	@property
 	def stats(self) -> List[str]:
 		"""Returns dynamic statlist (WIP)"""
-		attribs = self.map.game.attribs
+		attribs = self.game.attribs
 		hpPerc = self.hp / self.maxHP # HP percentage
 		fpPerc = self.fp / self.maxFP # FP percentage
 
@@ -51,7 +48,8 @@ class Player(Entity):
 		]
 	
 	def interact(self, entity: Entity) -> None:
-		if entity.type == Types.FRIENDLY:
-			return
-		self.map.game.UI.addLog(f"Player was damaged for {entity.dmg} hp!")
-		self.damage(entity.dmg)
+		# if entity.type == Types.FRIENDLY:
+		# 	return
+		# self.game.UI.addLog(f"Player was damaged for {entity.dmg} hp!")
+		# self.damage(entity.dmg)
+		pass

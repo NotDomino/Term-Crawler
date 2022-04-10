@@ -9,18 +9,19 @@ if TYPE_CHECKING:
 class Enemy(Entity):
 	def __init__(
 		self,
-		map: Map,
+		colour: int,
 		sprite: str,
 		x: int,
 		y: int
 	) -> None:
-		super().__init__(map, sprite, map.game.attribs.red)
+		super().__init__(map, sprite, colour)
 		self.type = Types.ENEMY
 		self.set_pos(x, y)
 	
 	def interact(self, entity: Entity):
 		"""How another entity interacts with this enemy"""
-		if entity.type == Types.FRIENDLY:
-			return
-		self.map.game.UI.addLog(f"enemy was damaged for {entity.dmg} hp!")
-		self.damage(entity.dmg)
+		# if entity.type == Types.FRIENDLY:
+		# 	return
+		# self.map.game.UI.addLog(f"enemy was damaged for {entity.dmg} hp!")
+		# self.damage(entity.dmg)
+		pass

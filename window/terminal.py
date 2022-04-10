@@ -36,6 +36,6 @@ class Terminal:
 			# TODO stick exception loop here, not done yet because i want it to crash :)
 			self.stdscr.clear() # mandatory, leave it alone
 
-			self.screen.refresh() # edit the refresh loop of THIS ONE
-			
+			self.screen.render()
+			self.screen.handle()
 			self.stdscr.refresh() # mandatory, leave it alone

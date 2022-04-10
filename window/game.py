@@ -1,11 +1,14 @@
 from __future__ import annotations
-from typing import List, Tuple, TYPE_CHECKING
+from typing import Tuple, TYPE_CHECKING
 
 
+
+from entities import Player
+from mapgen import generateMap
 from .attributes import Attributes
 from .UI import UI
-from map import Map
 from menus import Options
+from inputHandlers import EventHandler, OptionsMenuHandler
 
 if TYPE_CHECKING:
 	from menus import Menu
@@ -30,7 +33,11 @@ class Game:
 		self.width = width
 		self.height = height
 		
-		self.map = Map(self)
+		self.eventHandler = EventHandler(self)
+		self.player = Player(self)
+
+		self.map = generateMap(self, self.player)
+		
 		self.UI = UI(self)
 
 		self.menus = {
@@ -40,7 +47,7 @@ class Game:
 		}
 
 		self.menu: Menu = None
-		self.debug = False
+		self.debug = True
 
 	# --------------------------------------------------------
 	# MENUS
@@ -49,13 +56,14 @@ class Game:
 	def loadMenu(self, name: str) -> None:
 		"""loads provided menu"""
 		self.menu = self.menus[name](self)
+		self.eventHandler = OptionsMenuHandler(self)
 
 	# --------------------------------------------------------
 	# MAIN
 	# --------------------------------------------------------
 
-	def refresh(self) -> None:
-		"""Refreshes the screen"""
+	def render(self) -> None:
+		"""Renders the screen"""
 		self.UI.drawBorder()
 		
 		if self.menu:  
@@ -63,11 +71,15 @@ class Game:
 
 		self.UI.printStats()
 		self.UI.printLog() # prints the log underneath the border
-		
-		
+		self.map.refresh()
 
-		self.map.render()
+	def handle(self) -> None:
+		action = self.eventHandler.keyDown()
 
+		if action is None:
+			return
+			
+		action.perform(self, self.player)
 	# --------------------------------------------------------
 	# HELPFUL STUFF
 	# --------------------------------------------------------

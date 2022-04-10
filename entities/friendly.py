@@ -12,7 +12,7 @@ class Friendly(Entity):
 
 	def __init__(
 		self,
-		map: Map,
+		colour: int,
 		sprite: str,
 		x: int,
 		y: int,
@@ -21,12 +21,13 @@ class Friendly(Entity):
 			"Ew, go away!"
 		]
 	):
-		super().__init__(map, sprite, map.game.attribs.green)
+		super().__init__(map, sprite, colour)
 		self.x = x
 		self.y = y
 		self.type = Types.FRIENDLY
 		self.dialogue_opts = dialogue_opts
 	
 	def interact(self, entity) -> None:
-		if entity.type == Types.PLAYER:
-			self.map.game.UI.OK("Entity Interaction", random.choice(self.dialogue_opts))
+		# if entity.type == Types.PLAYER:
+		# 	self.map.game.UI.OK("Entity Interaction", random.choice(self.dialogue_opts))
+		pass

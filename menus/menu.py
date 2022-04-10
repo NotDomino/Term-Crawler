@@ -18,30 +18,15 @@ class Menu(ABC):
 		self.index: int = 0
 		self.title = title
 		
-	def __scrollUp(self) -> None:
+	def scrollUp(self) -> None:
 		self.index -= 1
 		if self.index < 0:
 			self.index = len(self.opts.keys()) -1
 
-	def __scrollDown(self) -> None:
+	def scrollDown(self) -> None:
 		self.index += 1
 		if self.index > len(self.opts.keys()) -1:
 			self.index = 0
-	
-	def getKeyIn(self) -> None:
-		ch = self.game.getch()
-		match ch:
-			case 27: #escape key goes back to game
-				self.game.menu = None
-
-			case 259 | 119: # up arrow | w
-				self.__scrollUp()
-				
-			case 258 | 115: # down arrow | s
-				self.__scrollDown()
-
-			case 10: # enter key
-				self.opts[ list(self.opts.keys())[self.index] ]()
 	
 	@abstractclassmethod
 	def render() -> None:

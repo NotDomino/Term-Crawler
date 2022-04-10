@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-import curses.textpad as cr_text
 
 from .menu import Menu
+from inputHandlers import EventHandler, OptionsMenuHandler
 
 if TYPE_CHECKING:
 	from window.game import Game
@@ -49,8 +49,6 @@ class Options(Menu):
 				center_align = True
 			) # selected option
 
-		self.getKeyIn()
-
 	def save(self) -> None:
 		# TODO: implement save function
 		# these todos are gonna be here for a while
@@ -61,13 +59,17 @@ class Options(Menu):
 		# these todos are gonna be here for a while
 		self.back()
 
+	def enter(self) -> None:
+		self.opts[ list(self.opts.keys())[self.index] ]()
+
 	def back(self):
 		self.game.menu = None
+		self.game.eventHandler = EventHandler(self.game)
 
 	def help(self):
 		"""Help menu"""
 		self.game.term.stdscr.clear() # mandatory, leave it alone
-		self.game.drawBorder()
+		self.game.UI.drawBorder()
 		bold = self.game.attribs.bold
 		xoff = self.game.center[0]# offset everything here by these values
 
@@ -83,7 +85,7 @@ class Options(Menu):
 			"esc | options menu"
 		]
 		for i in range(len(gameplay)):
-			self.game.print((xoff//2)-6, i+4, gameplay[i])
+			self.game.UI.print((xoff//2)-6, i+4, gameplay[i])
 		
 		self.game.UI.print(xoff, 3, "Menus", bold, True)
 		self.game.UI.print(xoff-6, 4, "W/↑ | scroll up")

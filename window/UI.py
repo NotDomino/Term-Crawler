@@ -1,7 +1,6 @@
 from __future__ import annotations
 import curses.textpad as cr_text
 from typing import TYPE_CHECKING, List, Tuple
-import curses
 
 if TYPE_CHECKING:
 	from .game import Game
@@ -41,12 +40,6 @@ class UI:
 
 			self.game.term.stdscr.refresh()
 
-			ch = self.game.getch()
-			match ch:
-				case 10: #enter key
-					return
-				case 27: #escape key
-					self.game.loadMenu("options") # loads the escape menu
 	
 	@staticmethod
 	def textWrap(string: str, width: int) -> List[str]:
@@ -107,7 +100,7 @@ class UI:
 		"""Prints the players stats"""
 		x = self.game.width + (self.game.term.width-self.game.width) //2
 
-		playerStats = self.game.map.player.stats
+		playerStats = self.game.player.stats
 
 		self.print(x, 0, "STATS", self.game.attribs.yellow | self.game.attribs.bold, True) # prints the STATS title
 
@@ -122,8 +115,9 @@ class UI:
 	
 	def printDebug(self) -> None:
 		self.print(2, 2, "DEBUG", self.game.attribs.magenta | self.game.attribs.bold)
-		self.print(2, 3, f"Player XY: {self.game.map.player.x}|{self.game.map.player.y}")
-		self.print(2, 4, f"Last key input: {self.lastKeyInput}")
+		self.print(2, 3, f"Player XY: {self.game.player.x}|{self.game.player.y}")
+		self.print(2, 4, f"camera XY: {self.game.map.x}|{self.game.map.y}")
+		self.print(2, 5, f"Last key input: {self.lastKeyInput}")
 		
 	def addLog(self, text: str, attrib: int = None) -> None:
 		"""Adds to the text log"""
