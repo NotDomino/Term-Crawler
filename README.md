@@ -1,14 +1,7 @@
 # Term-Crawler
 interactive 2D Dungeon Crawler RPG written in Python for a console. you can use with WASD, have customizable options (WIP), etc.
 
-The goal of this project is to make an entirely interactive console-based dungeon crawler, and i mean i am gonna go _ham_ with the interactiveness if i can help it. ( it's tile-based based so who cares about fps anyways )
-
-ANY changes made will be posted here, I will try my best to keep this project active and rolling
-
-### *warning*
-
-**I am NOT good when it comes to writing code. my code WILL LIKELY be a bunch of spaghetti. DON'T expect to see anything remotely understandable**
-If you do decide to attempt to understand my code, feel free to suggest some things! any advice is taken.
+The goal of this project is to make an entirely interactive console-based dungeon crawler, and i mean i am gonna go _ham_ with the interactiveness if i can help it. ( it's tile-based based so who cares about framerate anyways )
 
 # Features as of right now
 - arrow keys and WASD to move
